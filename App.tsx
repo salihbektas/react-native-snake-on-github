@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import {
+  Button,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -18,11 +19,36 @@ function App(): JSX.Element {
     )
 
 
+  function up(){
+    console.log('up')
+  }
+  function down(){
+    console.log('down')
+  }
+  function left(){
+    console.log('left')
+  }
+  function right(){
+    console.log('right')
+  }
+
   return (
     <SafeAreaView style={styles.main}>
       <Text>Deneme</Text>
       <View style={styles.board}>
         {tiles}
+      </View>
+      <View>
+      <Button title='up' onPress={up}/>
+      <View style={{flexDirection: 'row'}}>
+        <View style={{width:'50%'}}>
+          <Button title='left' onPress={left}/>
+        </View>
+        <View style={{width:'50%'}}>
+          <Button title='right' onPress={right}/>
+        </View>
+      </View>
+      <Button title='down' onPress={down}/>
       </View>
     </SafeAreaView>
   );
