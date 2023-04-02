@@ -15,12 +15,9 @@ function App(): JSX.Element {
 
   const [direction, setDirection] = useState('')
 
-  const moveH = useRef(new Animated.Value(0)).current
+  const head = useRef(new Animated.ValueXY()).current
 
   const posH = useRef(0)
-
-  const moveV = useRef(new Animated.Value(0)).current
-
   const posV = useRef(0)
 
   for (let i = 0; i < 49; ++i)
@@ -29,57 +26,21 @@ function App(): JSX.Element {
     )
 
 
-  function up() {
-    if(posV.current > 0){
-      posV.current -= 1
-      Animated.timing(moveV, {
-        toValue: posV.current,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-    }
-  }
-  function down() {
-    if(posV.current < 6){
-      posV.current += 1
-      Animated.timing(moveV, {
-        toValue: posV.current,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-    }
-  }
-  function left() {
-    if(posH.current > 0){
-      posH.current -= 1
-      Animated.timing(moveH, {
-        toValue: posH.current,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-    }
-  }
-  function right() {
-    if(posH.current < 6){
-      posH.current += 1
-      Animated.timing(moveH, {
-        toValue: posH.current,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-    }
-  }
-
   function tick() {
-    if(direction === 'up')
-      up()
-    if(direction === 'left')
-      left()
-    if(direction === 'right')
-      right()
-    if(direction === 'down')
-      down()
+    if(direction === 'up' && posV.current > 0)
+      posV.current -= 50
+    if(direction === 'left' && posH.current > 0)
+      posH.current -= 50
+    if(direction === 'right' && posH.current < 300)
+      posH.current += 50
+    if(direction === 'down' && posV.current < 300)
+      posV.current += 50
 
+    Animated.timing(head, {
+      toValue: {x: posH.current, y: posV.current},
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   }
 
   useInterval(tick, 500)
@@ -91,8 +52,8 @@ function App(): JSX.Element {
         <Animated.View style={{
           height: 50, aspectRatio: 1, backgroundColor: 'red', zIndex: 1, position: 'absolute',
           transform: [
-            { translateX: moveH.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) },
-            { translateY: moveV.interpolate({ inputRange: [0, 1], outputRange: [0, 50] }) }
+            { translateX: head.x },
+            { translateY: head.y }
           ]
         }}
         />
