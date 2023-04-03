@@ -24,8 +24,8 @@ function App(): JSX.Element {
 
   const tiles = []
 
-  const [currentDirection, setCurrentDirection] = useState('')
-  const [nextDirection, setNextDirection] = useState('')
+  const currentDirection = useRef('')
+  const nextDirection = useRef('')
 
   const head = useRef(new Animated.ValueXY()).current
   const t1 = useRef(new Animated.ValueXY()).current
@@ -41,7 +41,7 @@ function App(): JSX.Element {
 
 
   function tick() {
-    setCurrentDirection(nextDirection)
+    currentDirection.current = nextDirection.current
 
     snakeNodes.current[3].x = snakeNodes.current[2].x
     snakeNodes.current[3].y = snakeNodes.current[2].y
@@ -50,13 +50,13 @@ function App(): JSX.Element {
     snakeNodes.current[1].x = snakeNodes.current[0].x
     snakeNodes.current[1].y = snakeNodes.current[0].y
 
-    if (currentDirection === 'up' && snakeNodes.current[0].y > 0)
+    if (currentDirection.current === 'up' && snakeNodes.current[0].y > 0)
       snakeNodes.current[0].y -= STEP
-    if (currentDirection === 'left' && snakeNodes.current[0].x > 0)
+    if (currentDirection.current === 'left' && snakeNodes.current[0].x > 0)
       snakeNodes.current[0].x -= STEP
-    if (currentDirection === 'right' && snakeNodes.current[0].x < STEP * 52)
+    if (currentDirection.current === 'right' && snakeNodes.current[0].x < STEP * 52)
       snakeNodes.current[0].x += STEP
-    if (currentDirection === 'down' && snakeNodes.current[0].y < STEP * 6)
+    if (currentDirection.current === 'down' && snakeNodes.current[0].y < STEP * 6)
       snakeNodes.current[0].y += STEP
 
     Animated.parallel([
@@ -131,16 +131,16 @@ function App(): JSX.Element {
         {tiles}
       </View>
       <View style={{marginTop: 15}}>
-        <Button title='up' onPress={() => { if (currentDirection !== 'down') setNextDirection('up') }} />
+        <Button title='up' onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} />
         <View style={{ flexDirection: 'row' }}>
           <View style={{ width: '50%' }}>
-            <Button title='left' onPress={() => { if (currentDirection !== 'right') setNextDirection('left') }} />
+            <Button title='left' onPress={() => { if (currentDirection.current !== 'right') nextDirection.current = 'left' }} />
           </View>
           <View style={{ width: '50%' }}>
-            <Button title='right' onPress={() => { if (currentDirection !== 'left') setNextDirection('right') }} />
+            <Button title='right' onPress={() => { if (currentDirection.current !== 'left') nextDirection.current = 'right' }} />
           </View>
         </View>
-        <Button title='down' onPress={() => { if (currentDirection !== 'up') setNextDirection('down') }} />
+        <Button title='down' onPress={() => { if (currentDirection.current !== 'up') nextDirection.current = 'down' }} />
       </View>
     </SafeAreaView>
   );
