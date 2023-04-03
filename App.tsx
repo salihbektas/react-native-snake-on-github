@@ -8,6 +8,12 @@ import {
 } from 'react-native';
 import useInterval from 'use-interval';
 
+interface snakeNode {
+  x: number;
+  y: number;
+}
+
+const TICK_TIME = 300
 
 function App(): JSX.Element {
 
@@ -16,9 +22,11 @@ function App(): JSX.Element {
   const [direction, setDirection] = useState('')
 
   const head = useRef(new Animated.ValueXY()).current
+  const t1 = useRef(new Animated.ValueXY()).current
+  const t2 = useRef(new Animated.ValueXY()).current
+  const t3 = useRef(new Animated.ValueXY()).current
 
-  const posH = useRef(0)
-  const posV = useRef(0)
+  const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
 
   for (let i = 0; i < 49; ++i)
     tiles.push(
@@ -27,36 +35,91 @@ function App(): JSX.Element {
 
 
   function tick() {
-    if (direction === 'up' && posV.current > 0)
-      posV.current -= 50
-    if (direction === 'left' && posH.current > 0)
-      posH.current -= 50
-    if (direction === 'right' && posH.current < 300)
-      posH.current += 50
-    if (direction === 'down' && posV.current < 300)
-      posV.current += 50
+    snakeNodes.current[3].x = snakeNodes.current[2].x
+    snakeNodes.current[3].y = snakeNodes.current[2].y
+    snakeNodes.current[2].x = snakeNodes.current[1].x
+    snakeNodes.current[2].y = snakeNodes.current[1].y
+    snakeNodes.current[1].x = snakeNodes.current[0].x
+    snakeNodes.current[1].y = snakeNodes.current[0].y
 
-    Animated.timing(head, {
-      toValue: { x: posH.current, y: posV.current },
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
+    if (direction === 'up' && snakeNodes.current[0].y > 0)
+      snakeNodes.current[0].y -= 50
+    if (direction === 'left' && snakeNodes.current[0].x > 0)
+      snakeNodes.current[0].x -= 50
+    if (direction === 'right' && snakeNodes.current[0].x < 300)
+      snakeNodes.current[0].x += 50
+    if (direction === 'down' && snakeNodes.current[0].y < 300)
+      snakeNodes.current[0].y += 50
+
+    Animated.parallel([
+      Animated.timing(head, {
+        toValue: { x: snakeNodes.current[0].x, y: snakeNodes.current[0].y },
+        duration: TICK_TIME,
+        useNativeDriver: true,
+      }),
+
+      Animated.timing(t1, {
+        toValue: { x: snakeNodes.current[1].x, y: snakeNodes.current[1].y },
+        duration: TICK_TIME,
+        useNativeDriver: true,
+      }),
+
+      Animated.timing(t2, {
+        toValue: { x: snakeNodes.current[2].x, y: snakeNodes.current[2].y },
+        duration: TICK_TIME,
+        useNativeDriver: true,
+      }),
+
+      Animated.timing(t3, {
+        toValue: { x: snakeNodes.current[3].x, y: snakeNodes.current[3].y },
+        duration: TICK_TIME,
+        useNativeDriver: true,
+      })
+    ]).start()
   }
 
-  useInterval(tick, 500)
+  useInterval(tick, TICK_TIME)
 
   return (
     <SafeAreaView style={styles.main}>
 
       <View style={styles.board}>
         <Animated.View style={{
-          height: 50, aspectRatio: 1, backgroundColor: 'red', zIndex: 1, position: 'absolute',
+          height: 50, aspectRatio: 1, backgroundColor: 'red', zIndex: 4, position: 'absolute',
           transform: [
             { translateX: head.x },
             { translateY: head.y }
           ]
         }}
         />
+
+        <Animated.View style={{
+          height: 50, aspectRatio: 1, backgroundColor: 'blue', zIndex: 3, position: 'absolute',
+          transform: [
+            { translateX: t1.x },
+            { translateY: t1.y }
+          ]
+        }}
+        />
+
+        <Animated.View style={{
+          height: 50, aspectRatio: 1, backgroundColor: 'purple', zIndex: 2, position: 'absolute',
+          transform: [
+            { translateX: t2.x },
+            { translateY: t2.y }
+          ]
+        }}
+        />
+
+        <Animated.View style={{
+          height: 50, aspectRatio: 1, backgroundColor: 'orange', zIndex: 1, position: 'absolute',
+          transform: [
+            { translateX: t3.x },
+            { translateY: t3.y }
+          ]
+        }}
+        />
+
         {tiles}
       </View>
       <View>
