@@ -37,7 +37,7 @@ function App(): JSX.Element {
 
   function tick() {
     setCurrentDirection(nextDirection)
-    
+
     snakeNodes.current[3].x = snakeNodes.current[2].x
     snakeNodes.current[3].y = snakeNodes.current[2].y
     snakeNodes.current[2].x = snakeNodes.current[1].x
@@ -88,7 +88,7 @@ function App(): JSX.Element {
 
       <View style={styles.board}>
         <Animated.View style={{
-          height: 50, aspectRatio: 1, backgroundColor: 'red', zIndex: 4, position: 'absolute',
+          ...styles.head,
           transform: [
             { translateX: head.x },
             { translateY: head.y }
@@ -97,7 +97,7 @@ function App(): JSX.Element {
         />
 
         <Animated.View style={{
-          height: 50, aspectRatio: 1, backgroundColor: 'blue', zIndex: 3, position: 'absolute',
+          ...styles.tail,
           transform: [
             { translateX: t1.x },
             { translateY: t1.y }
@@ -106,7 +106,7 @@ function App(): JSX.Element {
         />
 
         <Animated.View style={{
-          height: 50, aspectRatio: 1, backgroundColor: 'purple', zIndex: 2, position: 'absolute',
+          ...styles.tail,
           transform: [
             { translateX: t2.x },
             { translateY: t2.y }
@@ -115,7 +115,7 @@ function App(): JSX.Element {
         />
 
         <Animated.View style={{
-          height: 50, aspectRatio: 1, backgroundColor: 'orange', zIndex: 1, position: 'absolute',
+          ...styles.tail,
           transform: [
             { translateX: t3.x },
             { translateY: t3.y }
@@ -158,6 +158,28 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: 350,
     aspectRatio: 1
+  },
+
+  head: {
+    height: 44,
+    aspectRatio: 1,
+    borderRadius: 8,
+    backgroundColor: 'purple',
+    zIndex: 2,
+    position: 'absolute',
+    top: 3,
+    left: 3
+  },
+
+  tail: {
+    height: 36,
+    aspectRatio: 1,
+    borderRadius: 8,
+    backgroundColor: 'purple',
+    zIndex: 1,
+    position: 'absolute',
+    top: 7,
+    left: 7
   }
 });
 
