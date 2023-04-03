@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import {
   Animated,
   Button,
+  Dimensions,
   SafeAreaView,
   StyleSheet,
   View,
@@ -13,7 +14,11 @@ interface snakeNode {
   y: number;
 }
 
+const WIDTH = Dimensions.get('screen').width
+const STEP = Math.floor(WIDTH/53)
 const TICK_TIME = 300
+
+const DAYOFWEEK = new Date().getDay()
 
 function App(): JSX.Element {
 
@@ -29,7 +34,7 @@ function App(): JSX.Element {
 
   const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
 
-  for (let i = 0; i < 49; ++i)
+  for (let i = 0; i < 364+DAYOFWEEK; ++i)
     tiles.push(
       <View style={{ ...styles.tile, backgroundColor: i % 2 === 0 ? 'darkgrey' : 'lightgrey' }} key={i} />
     )
@@ -46,13 +51,13 @@ function App(): JSX.Element {
     snakeNodes.current[1].y = snakeNodes.current[0].y
 
     if (currentDirection === 'up' && snakeNodes.current[0].y > 0)
-      snakeNodes.current[0].y -= 50
+      snakeNodes.current[0].y -= STEP
     if (currentDirection === 'left' && snakeNodes.current[0].x > 0)
-      snakeNodes.current[0].x -= 50
-    if (currentDirection === 'right' && snakeNodes.current[0].x < 300)
-      snakeNodes.current[0].x += 50
-    if (currentDirection === 'down' && snakeNodes.current[0].y < 300)
-      snakeNodes.current[0].y += 50
+      snakeNodes.current[0].x -= STEP
+    if (currentDirection === 'right' && snakeNodes.current[0].x < STEP * 52)
+      snakeNodes.current[0].x += STEP
+    if (currentDirection === 'down' && snakeNodes.current[0].y < STEP * 6)
+      snakeNodes.current[0].y += STEP
 
     Animated.parallel([
       Animated.timing(head, {
@@ -125,7 +130,7 @@ function App(): JSX.Element {
 
         {tiles}
       </View>
-      <View>
+      <View style={{marginTop: 15}}>
         <Button title='up' onPress={() => { if (currentDirection !== 'down') setNextDirection('up') }} />
         <View style={{ flexDirection: 'row' }}>
           <View style={{ width: '50%' }}>
@@ -144,42 +149,41 @@ function App(): JSX.Element {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    padding: 16,
     justifyContent: 'center'
   },
 
   tile: {
-    height: 50,
-    aspectRatio: 1
+    height: STEP -1,
+    width: STEP -1,
+    marginBottom: 1,
+    marginRight: 1,
+    borderRadius: 2
   },
 
   board: {
-    flexDirection: 'row',
     flexWrap: 'wrap',
-    width: 350,
-    aspectRatio: 1
+    width: '100%',
+    height: (STEP)*7
   },
 
   head: {
-    height: 44,
+    height:  STEP +1,
     aspectRatio: 1,
-    borderRadius: 8,
+    borderRadius: 3,
     backgroundColor: 'purple',
     zIndex: 2,
     position: 'absolute',
-    top: 3,
-    left: 3
+    top: -1,
+    left: -1
   },
 
   tail: {
-    height: 36,
+    height:  STEP -1,
     aspectRatio: 1,
-    borderRadius: 8,
+    borderRadius: 2,
     backgroundColor: 'purple',
     zIndex: 1,
     position: 'absolute',
-    top: 7,
-    left: 7
   }
 });
 
