@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import * as cheerio from 'cheerio';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Button,
@@ -27,6 +28,8 @@ function App(): JSX.Element {
   const currentDirection = useRef('')
   const nextDirection = useRef('')
 
+  const [heatMap, setHeatMap] = useState<number[]>(new Array(364+DAYOFWEEK).fill(0))
+
   const head = useRef(new Animated.ValueXY()).current
   const t1 = useRef(new Animated.ValueXY()).current
   const t2 = useRef(new Animated.ValueXY()).current
@@ -40,6 +43,14 @@ function App(): JSX.Element {
     )
 
 
+  async function getData(username: string) {
+    let data = await fetch(`https://github.com/${username}`)
+    const $ = cheerio.load(await data.text());
+    const $days = $("svg.js-calendar-graph-svg rect.ContributionCalendar-day");
+    const newData = [...heatMap]
+    $($days.get()).each((id, el) =>  {newData[id] = parseInt($(el).attr('data-level'))})
+    setHeatMap(newData)
+  }
   function tick() {
     currentDirection.current = nextDirection.current
 
@@ -87,6 +98,14 @@ function App(): JSX.Element {
   }
 
   useInterval(tick, TICK_TIME)
+
+  useEffect(() => {
+    getData('salihbektas')
+  }, [])
+
+  useEffect(() => {
+    console.log(heatMap)
+  }, [heatMap])
 
   return (
     <SafeAreaView style={styles.main}>
