@@ -28,7 +28,7 @@ function App(): JSX.Element {
   const currentDirection = useRef('')
   const nextDirection = useRef('')
 
-  const [heatMap, setHeatMap] = useState<number[]>(new Array(364+DAYOFWEEK).fill(0))
+  const [heatMap, setHeatMap] = useState<number[]>(new Array(365+DAYOFWEEK).fill(0))
 
   const head = useRef(new Animated.ValueXY()).current
   const t1 = useRef(new Animated.ValueXY()).current
@@ -37,7 +37,7 @@ function App(): JSX.Element {
 
   const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
 
-  for (let i = 0; i < 364+DAYOFWEEK; ++i)
+  for (let i = 0; i < 365+DAYOFWEEK; ++i)
     tiles.push(
       <View style={{ ...styles.tile, backgroundColor: i % 2 === 0 ? 'darkgrey' : 'lightgrey' }} key={i} />
     )
