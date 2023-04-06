@@ -4,6 +4,7 @@ import {
   Animated,
   Button,
   Dimensions,
+  Easing,
   SafeAreaView,
   StyleSheet,
   View,
@@ -74,24 +75,28 @@ function App(): JSX.Element {
       Animated.timing(head, {
         toValue: { x: snakeNodes.current[0].x, y: snakeNodes.current[0].y },
         duration: TICK_TIME,
+        easing: Easing.linear,
         useNativeDriver: true,
       }),
 
       Animated.timing(t1, {
         toValue: { x: snakeNodes.current[1].x, y: snakeNodes.current[1].y },
         duration: TICK_TIME,
+        easing: Easing.linear,
         useNativeDriver: true,
       }),
 
       Animated.timing(t2, {
         toValue: { x: snakeNodes.current[2].x, y: snakeNodes.current[2].y },
         duration: TICK_TIME,
+        easing: Easing.linear,
         useNativeDriver: true,
       }),
 
       Animated.timing(t3, {
         toValue: { x: snakeNodes.current[3].x, y: snakeNodes.current[3].y },
         duration: TICK_TIME,
+        easing: Easing.linear,
         useNativeDriver: true,
       })
     ]).start()
