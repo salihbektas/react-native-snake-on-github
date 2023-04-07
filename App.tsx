@@ -16,11 +16,19 @@ interface snakeNode {
   y: number;
 }
 
-const WIDTH = Dimensions.get('screen').width
+const WIDTH = Dimensions.get('window').width
 const STEP = Math.floor(WIDTH/53)
 const TICK_TIME = 300
 
 const DAYOFWEEK = new Date().getDay()
+
+const colors = [
+  '#161b22',
+  '#0e4429',
+  '#006d32',
+  '#26a641',
+  '#39d353'
+]
 
 function App(): JSX.Element {
 
@@ -152,7 +160,7 @@ function App(): JSX.Element {
         }}
         />
 
-        {tiles}
+        {heatMap.map((item, index) => <View style={{ ...styles.tile, backgroundColor: colors[item] }} key={index} />)}
       </View>
       <View style={{marginTop: 15}}>
         <Button title='up' onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} />
@@ -173,14 +181,15 @@ function App(): JSX.Element {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: '#0d1117'
   },
 
   tile: {
-    height: STEP -1,
-    width: STEP -1,
-    marginBottom: 1,
-    marginRight: 1,
+    height: STEP -2,
+    width: STEP -2,
+    marginBottom: 2,
+    marginRight: 2,
     borderRadius: 2
   },
 
