@@ -37,6 +37,8 @@ function App(): JSX.Element {
   const currentDirection = useRef('')
   const nextDirection = useRef('')
 
+  const locationIndex = useRef(0)
+
   const [heatMap, setHeatMap] = useState<number[]>(new Array(365+DAYOFWEEK).fill(0))
 
   const head = useRef(new Animated.ValueXY()).current
@@ -70,14 +72,22 @@ function App(): JSX.Element {
     snakeNodes.current[1].x = snakeNodes.current[0].x
     snakeNodes.current[1].y = snakeNodes.current[0].y
 
-    if (currentDirection.current === 'up' && snakeNodes.current[0].y > 0)
+    if (currentDirection.current === 'up' && snakeNodes.current[0].y > 0){
       snakeNodes.current[0].y -= STEP
-    if (currentDirection.current === 'left' && snakeNodes.current[0].x > 0)
+      locationIndex.current -= 1
+    }
+    if (currentDirection.current === 'left' && snakeNodes.current[0].x > 0){
       snakeNodes.current[0].x -= STEP
-    if (currentDirection.current === 'right' && snakeNodes.current[0].x < STEP * 52)
+      locationIndex.current -= 7
+    }
+    if (currentDirection.current === 'right' && snakeNodes.current[0].x < STEP * 52){
       snakeNodes.current[0].x += STEP
-    if (currentDirection.current === 'down' && snakeNodes.current[0].y < STEP * 6)
+      locationIndex.current += 7
+    }
+    if (currentDirection.current === 'down' && snakeNodes.current[0].y < STEP * 6){
       snakeNodes.current[0].y += STEP
+      locationIndex.current += 1
+    }
 
     Animated.parallel([
       Animated.timing(head, {
@@ -108,6 +118,12 @@ function App(): JSX.Element {
         useNativeDriver: true,
       })
     ]).start()
+
+    if(heatMap[locationIndex.current] !== 0){
+      let newMap = [...heatMap]
+      newMap[locationIndex.current] = 0
+      setHeatMap(newMap)
+    }
   }
 
   useInterval(tick, TICK_TIME)
