@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import useInterval from 'use-interval';
+import Tile from './src/component/Tile';
 
 interface snakeNode {
   x: number;
@@ -22,17 +23,7 @@ const TICK_TIME = 300
 
 const DAYOFWEEK = new Date().getDay()
 
-const colors = [
-  '#161b22',
-  '#0e4429',
-  '#006d32',
-  '#26a641',
-  '#39d353'
-]
-
 function App(): JSX.Element {
-
-  const tiles = []
 
   const currentDirection = useRef('')
   const nextDirection = useRef('')
@@ -47,11 +38,6 @@ function App(): JSX.Element {
   const t3 = useRef(new Animated.ValueXY()).current
 
   const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
-
-  for (let i = 0; i < 365+DAYOFWEEK; ++i)
-    tiles.push(
-      <View style={{ ...styles.tile, backgroundColor: i % 2 === 0 ? 'darkgrey' : 'lightgrey' }} key={i} />
-    )
 
 
   async function getData(username: string) {
@@ -176,7 +162,7 @@ function App(): JSX.Element {
         }}
         />
 
-        {heatMap.map((item, index) => <View style={{ ...styles.tile, backgroundColor: colors[item] }} key={index} />)}
+        {heatMap.map((item, index) => <Tile level={item} key={index}/>)}
       </View>
       <View style={{marginTop: 15}}>
         <Button title='up' onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} />
