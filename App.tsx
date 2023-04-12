@@ -40,13 +40,14 @@ function App(): JSX.Element {
   const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
 
 
-  async function getData(username: string) {
-    let data = await fetch(`https://github.com/${username}`)
-    const $ = cheerio.load(await data.text());
-    const $days = $("svg.js-calendar-graph-svg rect.ContributionCalendar-day");
-    const newData = [...heatMap]
-    $($days.get()).each((id, el) =>  {newData[id] = parseInt($(el).attr('data-level'))})
-    setHeatMap(newData)
+  function getData(username: string) {
+    fetch(`https://github.com/${username}`).then(value => value.text()).then(value => {
+      const $ = cheerio.load(value);
+      const $days = $("svg.js-calendar-graph-svg rect.ContributionCalendar-day");
+      const newData = [...heatMap]
+      $($days.get()).each((id, el) =>  {newData[id] = parseInt($(el).attr('data-level'))})
+      setHeatMap(newData)
+    })
   }
   function tick() {
     currentDirection.current = nextDirection.current
