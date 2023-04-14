@@ -3,7 +3,7 @@ import {
   Button,
   SafeAreaView,
   StyleSheet,
-  Text
+  TextInput
 } from 'react-native';
 
 import { HomeProps } from '../../types';
@@ -13,9 +13,14 @@ import { HomeProps } from '../../types';
 
 function Home({ navigation }: HomeProps): JSX.Element {
 
+  function onChange(userName: string) {
+    console.log(userName)
+  }
+
   return (
     <SafeAreaView style={styles.main}>
-      <Text style={{color: 'white'}}>Entering page</Text>
+      <TextInput onChangeText={onChange} placeholder='UserName' style={{backgroundColor: 'white'}} />
+
       <Button title='Go Game' onPress={() => navigation.navigate('Game') }/>
       
     </SafeAreaView>
