@@ -12,6 +12,7 @@ import {
 import useInterval from 'use-interval';
 import Tile from '../../component/Tile';
 import { GameProps } from '../../types';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface snakeNode {
   x: number;
@@ -24,7 +25,7 @@ const TICK_TIME = 300
 
 const DAYOFWEEK = new Date().getDay()
 
-function Game({ navigation }: GameProps): JSX.Element {
+function Game({ route, navigation }: GameProps): JSX.Element {
 
   const currentDirection = useRef('')
   const nextDirection = useRef('')
@@ -39,6 +40,10 @@ function Game({ navigation }: GameProps): JSX.Element {
   const t3 = useRef(new Animated.ValueXY()).current
 
   const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
+
+  useFocusEffect(() => {
+    console.log(route.params.data)
+  })
 
 
   function getData(username: string) {
@@ -121,7 +126,7 @@ function Game({ navigation }: GameProps): JSX.Element {
   }, [])
 
   useEffect(() => {
-    console.log(heatMap)
+    //console.log(heatMap)
   }, [heatMap])
 
   return (
