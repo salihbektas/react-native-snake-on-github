@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {
   Button,
-  Image,
   SafeAreaView,
   StyleSheet,
-  Text,
   TextInput,
-  View
 } from 'react-native';
 
 import { HomeProps } from '../../types';
 import * as Cheerio from 'cheerio';
+import UserCard from '../../components/UserCard';
 
 
 
@@ -18,6 +16,7 @@ import * as Cheerio from 'cheerio';
 function Home({ navigation }: HomeProps): JSX.Element {
 
   const [user, setUser] = useState('')
+  const [nickName, setNickName] = useState('')
   const [avatar, setAvatar] = useState<string | undefined>('')
   const [data, setData] = useState('')
 
@@ -28,11 +27,13 @@ function Home({ navigation }: HomeProps): JSX.Element {
       const $days = $("svg.js-calendar-graph-svg rect.ContributionCalendar-day");
       const $avatar = $('.avatar.avatar-user.width-full.border.color-bg-default');
       const $name = $('.p-name.vcard-fullname.d-block.overflow-hidden');
-      setUser($name.text())
+      const $nickname = $('.p-nickname.vcard-username.d-block')
+      setUser($name.text().trim())
+      setNickName($nickname.text().trim())
       setAvatar($avatar.attr('src'))
       let newData : string = ''
       $($days.get()).each((i, day) => newData += $(day).attr('data-level')+',')
-      newData += $name.text() + ',' + $avatar.attr('src')
+      newData += $name.text().trim() + ',' + $nickname.text().trim() + ',' + $avatar.attr('src')
       setData(newData)
     })
   }
@@ -43,11 +44,8 @@ function Home({ navigation }: HomeProps): JSX.Element {
 
   return (
     <SafeAreaView style={styles.main}>
-
-      <View style={{flexDirection: 'row', paddingHorizontal: 16, justifyContent: 'space-around'}}>
-        <Text style={{color: 'white', fontSize: 24}}>{user}</Text>
-        <Image src={avatar} style={{width: 120, height: 120, borderRadius: 60}}/>
-      </View>
+      <UserCard avatar={avatar} userName={user} nickName={nickName} />
+      
       <TextInput onChangeText={getData} placeholder='UserName' style={{backgroundColor: 'white'}} />
 
       <Button title='Go Game' onPress={() => navigation.navigate('Game', {data: data}) }/>

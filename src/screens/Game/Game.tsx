@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import useInterval from 'use-interval';
-import Tile from '../../component/Tile';
+import Tile from '../../components/Tile';
 import { GameProps } from '../../types';
 import { useFocusEffect } from '@react-navigation/native';
 
