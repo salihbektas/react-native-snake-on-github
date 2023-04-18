@@ -13,6 +13,7 @@ import useInterval from 'use-interval';
 import Tile from '../../components/Tile';
 import { GameProps } from '../../types';
 import { useFocusEffect } from '@react-navigation/native';
+import UserCard from '../../components/UserCard';
 
 interface snakeNode {
   x: number;
@@ -32,6 +33,10 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   const locationIndex = useRef(0)
 
+  const [user, setUser] = useState('')
+  const [nickName, setNickName] = useState('')
+  const [avatar, setAvatar] = useState('')
+
   const [heatMap, setHeatMap] = useState<number[]>(new Array(365+DAYOFWEEK).fill(0))
 
   const head = useRef(new Animated.ValueXY()).current
@@ -43,6 +48,10 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   useFocusEffect(() => {
     console.log(route.params.data)
+    let temp = route.params.data.split(',')
+    setAvatar(temp[temp.length-1])
+    setNickName(temp[temp.length-2])
+    setUser(temp[temp.length-3])
   })
 
 
@@ -131,7 +140,8 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   return (
     <SafeAreaView style={styles.main}>
-      <Button title='Go Back' onPress={() => navigation.navigate('Home')}/>
+
+      <UserCard avatar={avatar} nickName={nickName} userName={user} />
 
       <View style={styles.board}>
         <Animated.View style={{
