@@ -5,6 +5,8 @@ import {
   Button,
   Dimensions,
   Easing,
+  Image,
+  Pressable,
   SafeAreaView,
   StyleSheet,
   View,
@@ -141,7 +143,13 @@ function Game({ route, navigation }: GameProps): JSX.Element {
   return (
     <SafeAreaView style={styles.main}>
 
-      <UserCard avatar={avatar} nickName={nickName} userName={user} />
+      <View style={styles.topContainer}>
+        <Pressable onPress={() => navigation.goBack()} style={styles.backContainer} >
+          <Image source={require("../../../assets/arrow.png")} style={styles.back} />
+        </Pressable>
+
+        <UserCard avatar={avatar} nickName={nickName} userName={user} />
+      </View>
 
       <View style={styles.board}>
         <Animated.View style={{
@@ -205,6 +213,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#0d1117'
   },
 
+  topContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingTop: 16
+  },
+
+  backContainer: { marginRight:"auto" },
+
+  back: {
+    height: 30,
+    width: 30,
+    tintColor: 'white'
+  },
+
   tile: {
     height: STEP -2,
     width: STEP -2,
@@ -217,7 +239,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: '100%',
     height: (STEP)*7,
-    marginTop: 50
+    marginTop: 16
   },
 
   head: {
