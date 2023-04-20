@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Button,
@@ -48,13 +48,17 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
 
-  useFocusEffect(() => {
-    console.log(route.params.data)
-    let temp = route.params.data.split(',')
-    setAvatar(temp[temp.length-1])
-    setNickName(temp[temp.length-2])
-    setUser(temp[temp.length-3])
-  })
+  useFocusEffect(
+    useCallback(() => {
+      console.log(route.params.data)
+      let temp = route.params.data.split(',')
+      setAvatar(temp[temp.length-1])
+      setNickName(temp[temp.length-2])
+      setUser(temp[temp.length-3])
+      let newMap = temp.slice(0, temp.length-3)
+      setHeatMap(newMap.map(item => parseInt(item)))
+    }, [])
+  )
 
 
   function getData(username: string) {
@@ -132,9 +136,6 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   useInterval(tick, TICK_TIME)
 
-  useEffect(() => {
-    getData('salihbektas')
-  }, [])
 
   useEffect(() => {
     //console.log(heatMap)
