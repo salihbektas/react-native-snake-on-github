@@ -1,15 +1,15 @@
 import React from "react"
 import { Image, StyleSheet, Text, View } from "react-native"
 
-function UserCard({userName, nickName, avatar} : {userName: string, nickName: string, avatar: string}){
+function UserCard({ userName, nickName, avatar }: { userName: string, nickName: string, avatar: string }) {
 
-  return(
+  return (
     <View style={styles.main}>
       <View style={{}}>
         <Text style={styles.name}>{userName}</Text>
         <Text style={styles.nickName}>{nickName}</Text>
       </View>
-      <Image src={avatar} style={styles.avatar}/>
+      <Image src={avatar} style={styles.avatar} />
     </View>
   )
 }

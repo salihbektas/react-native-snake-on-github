@@ -23,7 +23,7 @@ interface snakeNode {
 }
 
 const WIDTH = Dimensions.get('window').width
-const STEP = Math.floor(WIDTH/53)
+const STEP = Math.floor(WIDTH / 53)
 const TICK_TIME = 300
 
 const DAYOFWEEK = new Date().getDay()
@@ -39,7 +39,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
   const [nickName, setNickName] = useState('')
   const [avatar, setAvatar] = useState('')
 
-  const [heatMap, setHeatMap] = useState<number[]>(new Array(365+DAYOFWEEK).fill(0))
+  const [heatMap, setHeatMap] = useState<number[]>(new Array(365 + DAYOFWEEK).fill(0))
 
   const head = useRef(new Animated.ValueXY()).current
   const t1 = useRef(new Animated.ValueXY()).current
@@ -52,24 +52,14 @@ function Game({ route, navigation }: GameProps): JSX.Element {
     useCallback(() => {
       console.log(route.params.data)
       let temp = route.params.data.split(',')
-      setAvatar(temp[temp.length-1])
-      setNickName(temp[temp.length-2])
-      setUser(temp[temp.length-3])
-      let newMap = temp.slice(0, temp.length-3)
+      setAvatar(temp[temp.length - 1])
+      setNickName(temp[temp.length - 2])
+      setUser(temp[temp.length - 3])
+      let newMap = temp.slice(0, temp.length - 3)
       setHeatMap(newMap.map(item => parseInt(item)))
     }, [])
   )
 
-
-  function getData(username: string) {
-    fetch(`https://github.com/${username}`).then(value => value.text()).then(value => {
-      const $ = cheerio.load(value);
-      const $days = $("svg.js-calendar-graph-svg rect.ContributionCalendar-day");
-      const newData = [...heatMap]
-      $($days.get()).each((id, el) =>  {newData[id] = parseInt($(el).attr('data-level'))})
-      setHeatMap(newData)
-    })
-  }
   function tick() {
     currentDirection.current = nextDirection.current
 
@@ -80,19 +70,19 @@ function Game({ route, navigation }: GameProps): JSX.Element {
     snakeNodes.current[1].x = snakeNodes.current[0].x
     snakeNodes.current[1].y = snakeNodes.current[0].y
 
-    if (currentDirection.current === 'up' && snakeNodes.current[0].y > 0){
+    if (currentDirection.current === 'up' && snakeNodes.current[0].y > 0) {
       snakeNodes.current[0].y -= STEP
       locationIndex.current -= 1
     }
-    if (currentDirection.current === 'left' && snakeNodes.current[0].x > 0){
+    if (currentDirection.current === 'left' && snakeNodes.current[0].x > 0) {
       snakeNodes.current[0].x -= STEP
       locationIndex.current -= 7
     }
-    if (currentDirection.current === 'right' && snakeNodes.current[0].x < STEP * 52){
+    if (currentDirection.current === 'right' && snakeNodes.current[0].x < STEP * 52) {
       snakeNodes.current[0].x += STEP
       locationIndex.current += 7
     }
-    if (currentDirection.current === 'down' && snakeNodes.current[0].y < STEP * 6){
+    if (currentDirection.current === 'down' && snakeNodes.current[0].y < STEP * 6) {
       snakeNodes.current[0].y += STEP
       locationIndex.current += 1
     }
@@ -127,7 +117,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
       })
     ]).start()
 
-    if(heatMap[locationIndex.current] !== 0){
+    if (heatMap[locationIndex.current] !== 0) {
       let newMap = [...heatMap]
       newMap[locationIndex.current] = 0
       setHeatMap(newMap)
@@ -135,11 +125,6 @@ function Game({ route, navigation }: GameProps): JSX.Element {
   }
 
   useInterval(tick, TICK_TIME)
-
-
-  useEffect(() => {
-    //console.log(heatMap)
-  }, [heatMap])
 
   return (
     <SafeAreaView style={styles.main}>
@@ -189,9 +174,9 @@ function Game({ route, navigation }: GameProps): JSX.Element {
         }}
         />
 
-        {heatMap.map((item, index) => <Tile level={item} key={index}/>)}
+        {heatMap.map((item, index) => <Tile level={item} key={index} />)}
       </View>
-      <View style={{marginTop: 15}}>
+      <View style={{ marginTop: 15 }}>
         <Button title='up' onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} />
         <View style={{ flexDirection: 'row' }}>
           <View style={{ width: '50%' }}>
@@ -220,7 +205,7 @@ const styles = StyleSheet.create({
     paddingTop: 16
   },
 
-  backContainer: { marginRight:"auto" },
+  backContainer: { marginRight: "auto" },
 
   back: {
     height: 30,
@@ -229,8 +214,8 @@ const styles = StyleSheet.create({
   },
 
   tile: {
-    height: STEP -2,
-    width: STEP -2,
+    height: STEP - 2,
+    width: STEP - 2,
     marginBottom: 2,
     marginRight: 2,
     borderRadius: 2
@@ -239,12 +224,12 @@ const styles = StyleSheet.create({
   board: {
     flexWrap: 'wrap',
     width: '100%',
-    height: (STEP)*7,
+    height: (STEP) * 7,
     marginTop: 16
   },
 
   head: {
-    height:  STEP +1,
+    height: STEP + 1,
     aspectRatio: 1,
     borderRadius: 3,
     backgroundColor: 'purple',
@@ -255,7 +240,7 @@ const styles = StyleSheet.create({
   },
 
   tail: {
-    height:  STEP -1,
+    height: STEP - 1,
     aspectRatio: 1,
     borderRadius: 2,
     backgroundColor: 'purple',
