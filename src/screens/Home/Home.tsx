@@ -9,6 +9,7 @@ import {
 import { HomeProps } from '../../types';
 import * as Cheerio from 'cheerio';
 import UserCard from '../../components/UserCard';
+import LoadingCard from '../../components/LoadingCard';
 
 
 function Home({ navigation }: HomeProps): JSX.Element {
@@ -18,11 +19,13 @@ function Home({ navigation }: HomeProps): JSX.Element {
   const [avatar, setAvatar] = useState<string | undefined>('')
   const [data, setData] = useState('')
   const [isPending, startTransition] = useTransition()
+  const [loading, setLoading] = useState(false)
 
   const abort = useRef(new AbortController())
 
 
   function getData(username: string) {
+    setLoading(true)
     abort.current.abort()
     abort.current = new AbortController()
     let signal = abort.current.signal
@@ -40,13 +43,17 @@ function Home({ navigation }: HomeProps): JSX.Element {
         $($days.get()).each((i, day) => newData += $(day).attr('data-level') + ',')
         newData += $name.text().trim() + ',' + $nickname.text().trim() + ',' + $avatar.attr('src')
         setData(newData)
+        setLoading(false)
       }).catch(e => console.log(signal.aborted))
     })
   }
 
   return (
     <SafeAreaView style={styles.main}>
-      <UserCard avatar={avatar} userName={user} nickName={nickName} />
+      {loading 
+        ? <LoadingCard/>
+        : <UserCard avatar={avatar} userName={user} nickName={nickName} />
+      }
 
       <TextInput onChangeText={getData} placeholder='UserName' style={{ backgroundColor: 'white' }} />
 
