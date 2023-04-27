@@ -40,7 +40,7 @@ function Home({ navigation }: HomeProps): JSX.Element {
         setNickName($nickname.text().trim())
         setAvatar($avatar.attr('src'))
         let newData: string = ''
-        $($days.get()).each((i, day) => newData += $(day).attr('data-level') + ',')
+        $($days.get()).each((i, day) => {newData += $(day).attr('data-level') + ','})
         newData += $name.text().trim() + ',' + $nickname.text().trim() + ',' + $avatar.attr('src')
         setData(newData)
         setLoading(false)
