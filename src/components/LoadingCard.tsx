@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
   main: {
     flexDirection: 'row',
     marginLeft: 'auto',
+    marginVertical: 16
   },
 
   text: {

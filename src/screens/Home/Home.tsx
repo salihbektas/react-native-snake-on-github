@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   StyleSheet,
   TextInput,
+  View,
 } from 'react-native';
 
 import { HomeProps } from '../../types';
@@ -16,7 +17,7 @@ function Home({ navigation }: HomeProps): JSX.Element {
 
   const [user, setUser] = useState('')
   const [nickName, setNickName] = useState('')
-  const [avatar, setAvatar] = useState<string | undefined>('')
+  const [avatar, setAvatar] = useState('')
   const [data, setData] = useState('')
   const [isPending, startTransition] = useTransition()
   const [loading, setLoading] = useState(false)
@@ -38,7 +39,8 @@ function Home({ navigation }: HomeProps): JSX.Element {
         const $nickname = $('.p-nickname.vcard-username.d-block')
         setUser($name.text().trim())
         setNickName($nickname.text().trim())
-        setAvatar($avatar.attr('src'))
+        const temp = $avatar.attr('src')
+        temp !== undefined ? setAvatar(temp) : setAvatar('')
         let newData: string = ''
         $($days.get()).each((i, day) => {newData += $(day).attr('data-level') + ','})
         newData += $name.text().trim() + ',' + $nickname.text().trim() + ',' + $avatar.attr('src')
@@ -50,8 +52,9 @@ function Home({ navigation }: HomeProps): JSX.Element {
 
   return (
     <SafeAreaView style={styles.main}>
-      {loading 
-        ? <LoadingCard/>
+      {loading ? <LoadingCard/> :
+        avatar.length === 0 
+        ? <View style={styles.placeholder} />
         : <UserCard avatar={avatar} userName={user} nickName={nickName} />
       }
 
@@ -66,8 +69,12 @@ function Home({ navigation }: HomeProps): JSX.Element {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    justifyContent: 'center',
     backgroundColor: '#0d1117'
+  },
+
+  placeholder: {
+    height: 120,
+    marginVertical: 16
   }
 });
 

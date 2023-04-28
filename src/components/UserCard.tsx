@@ -17,7 +17,8 @@ function UserCard({ userName, nickName, avatar }: { userName: string, nickName: 
 const styles = StyleSheet.create({
   main: {
     flexDirection: 'row',
-    marginLeft: 'auto'
+    marginLeft: 'auto',
+    marginVertical: 16
   },
 
   name: {
