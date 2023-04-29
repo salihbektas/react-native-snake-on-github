@@ -35,11 +35,11 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   const locationIndex = useRef(0)
 
-  const [user, setUser] = useState('')
-  const [nickName, setNickName] = useState('')
-  const [avatar, setAvatar] = useState('')
+  const [user, setUser] = useState(route.params.user)
+  const [nickName, setNickName] = useState(route.params.nickName)
+  const [avatar, setAvatar] = useState(route.params.avatar)
 
-  const [heatMap, setHeatMap] = useState<number[]>(new Array(365 + DAYOFWEEK).fill(0))
+  const [heatMap, setHeatMap] = useState<number[]>(route.params.data)
 
   const head = useRef(new Animated.ValueXY()).current
   const t1 = useRef(new Animated.ValueXY()).current
@@ -48,17 +48,6 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
 
-  useFocusEffect(
-    useCallback(() => {
-      console.log(route.params.data)
-      let temp = route.params.data.split(',')
-      setAvatar(temp[temp.length - 1])
-      setNickName(temp[temp.length - 2])
-      setUser(temp[temp.length - 3])
-      let newMap = temp.slice(0, temp.length - 3)
-      setHeatMap(newMap.map(item => parseInt(item)))
-    }, [])
-  )
 
   function tick() {
     currentDirection.current = nextDirection.current

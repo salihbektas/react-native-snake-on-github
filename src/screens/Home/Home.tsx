@@ -18,7 +18,7 @@ function Home({ navigation }: HomeProps): JSX.Element {
   const [user, setUser] = useState('')
   const [nickName, setNickName] = useState('')
   const [avatar, setAvatar] = useState('')
-  const [data, setData] = useState('')
+  const [data, setData] = useState<number[]>([])
   const [isPending, startTransition] = useTransition()
   const [loading, setLoading] = useState(false)
 
@@ -41,9 +41,8 @@ function Home({ navigation }: HomeProps): JSX.Element {
         setNickName($nickname.text().trim())
         const temp = $avatar.attr('src')
         temp !== undefined ? setAvatar(temp) : setAvatar('')
-        let newData: string = ''
-        $($days.get()).each((i, day) => {newData += $(day).attr('data-level') + ','})
-        newData += $name.text().trim() + ',' + $nickname.text().trim() + ',' + $avatar.attr('src')
+        let newData: number[] = []
+        $($days.get()).each((i, day) => {newData[i] = parseInt($(day).attr('data-level'))})
         setData(newData)
         setLoading(false)
       }).catch(e => console.log(signal.aborted))
@@ -60,7 +59,7 @@ function Home({ navigation }: HomeProps): JSX.Element {
 
       <TextInput onChangeText={getData} placeholder='UserName' style={{ backgroundColor: 'white' }} />
 
-      <Button title='Go Game' onPress={() => navigation.navigate('Game', { data: data })} />
+      <Button title='Go Game' onPress={() => navigation.navigate('Game', { data: data, avatar: avatar, user: user, nickName: nickName })} />
 
     </SafeAreaView>
   );
