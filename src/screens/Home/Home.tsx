@@ -43,7 +43,11 @@ function Home({ navigation }: HomeProps): JSX.Element {
         const temp = $avatar.attr('src')
         temp !== undefined ? setAvatar(temp) : setAvatar('')
         let newData: number[] = []
-        $($days.get()).each((i, day) => {newData[i] = parseInt($(day).attr('data-level'))})
+        $($days.get()).each((i, day) => {
+          let dataLevel = $(day).attr('data-level')
+          if(dataLevel !== undefined)
+            newData[i] = parseInt(dataLevel)
+        })
         setData(newData)
         setLoading(false)
       })
