@@ -30,8 +30,9 @@ function Home({ navigation }: HomeProps): JSX.Element {
     abort.current.abort()
     abort.current = new AbortController()
     let signal = abort.current.signal
-    startTransition(() => {
-      fetch(`https://github.com/${username}`, { signal }).then(value => value.text()).then(value => {
+    
+    fetch(`https://github.com/${username}`, { signal }).then(value => value.text()).then(value => {
+      startTransition(() => {
         const $ = Cheerio.load(value);
         const $days = $("svg.js-calendar-graph-svg rect.ContributionCalendar-day");
         const $avatar = $('.avatar.avatar-user.width-full.border.color-bg-default');
@@ -45,8 +46,8 @@ function Home({ navigation }: HomeProps): JSX.Element {
         $($days.get()).each((i, day) => {newData[i] = parseInt($(day).attr('data-level'))})
         setData(newData)
         setLoading(false)
-      }).catch(e => console.log(signal.aborted))
-    })
+      })
+    }).catch(e => console.log(signal.aborted))
   }
 
   return (
