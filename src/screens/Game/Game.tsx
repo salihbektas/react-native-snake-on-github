@@ -35,10 +35,6 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   const locationIndex = useRef(0)
 
-  const [user, setUser] = useState(route.params.user)
-  const [nickName, setNickName] = useState(route.params.nickName)
-  const [avatar, setAvatar] = useState(route.params.avatar)
-
   const [heatMap, setHeatMap] = useState<number[]>(route.params.data)
   const [commitCount, setCommitCount] = useState(route.params.commitCount)
 
@@ -129,7 +125,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
           <Image source={require("../../../assets/arrow.png")} style={styles.back} />
         </Pressable>
 
-        <UserCard avatar={avatar} nickName={nickName} userName={user} />
+        <UserCard avatar={route.params.avatar} nickName={route.params.nickName} userName={route.params.user} />
       </View>
 
       <View style={styles.board}>
