@@ -40,6 +40,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
   const [avatar, setAvatar] = useState(route.params.avatar)
 
   const [heatMap, setHeatMap] = useState<number[]>(route.params.data)
+  const [commitCount, setCommitCount] = useState(route.params.commitCount)
 
   const head = useRef(new Animated.ValueXY()).current
   const t1 = useRef(new Animated.ValueXY()).current
@@ -106,12 +107,17 @@ function Game({ route, navigation }: GameProps): JSX.Element {
       })
     ]).start()
 
-    if (heatMap[locationIndex.current] !== 0) {
+    if (heatMap[locationIndex.current] !== 0 && heatMap[locationIndex.current] !== undefined) {
       let newMap = [...heatMap]
       newMap[locationIndex.current] = 0
       setHeatMap(newMap)
+      setCommitCount(c => c - 1)
     }
   }
+
+  useEffect(() => {
+    console.log(commitCount)
+  }, [commitCount])
 
   useInterval(tick, TICK_TIME)
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useTransition } from 'react';
 import {
+  Alert,
   Button,
   SafeAreaView,
   StyleSheet,
@@ -19,6 +20,7 @@ function Home({ navigation }: HomeProps): JSX.Element {
   const [nickName, setNickName] = useState('')
   const [avatar, setAvatar] = useState('')
   const [data, setData] = useState<number[]>([])
+  const [commitCount, setCommitCount] = useState(0)
   const [isPending, startTransition] = useTransition()
   const [loading, setLoading] = useState(false)
 
@@ -30,7 +32,7 @@ function Home({ navigation }: HomeProps): JSX.Element {
     abort.current.abort()
     abort.current = new AbortController()
     let signal = abort.current.signal
-    
+
     fetch(`https://github.com/${username}`, { signal }).then(value => value.text()).then(value => {
       startTransition(() => {
         const $ = Cheerio.load(value);
@@ -45,8 +47,11 @@ function Home({ navigation }: HomeProps): JSX.Element {
         let newData: number[] = []
         $($days.get()).each((i, day) => {
           let dataLevel = $(day).attr('data-level')
-          if(dataLevel !== undefined)
+          if (dataLevel !== undefined)
             newData[i] = parseInt(dataLevel)
+
+          if (newData[i] > 0)
+            setCommitCount(c => c + 1)
         })
         setData(newData)
         setLoading(false)
@@ -54,17 +59,24 @@ function Home({ navigation }: HomeProps): JSX.Element {
     }).catch(e => console.log(signal.aborted))
   }
 
+  function onPress() {
+    if (commitCount === 0)
+      Alert.alert('Game Cannot Start', `${nickName} did not make any contributions last year.`, [{ text: 'OK' }])
+    else
+      navigation.navigate('Game', { data: data, avatar: avatar, user: user, nickName: nickName, commitCount: commitCount })
+  }
+
   return (
     <SafeAreaView style={styles.main}>
-      {loading ? <LoadingCard/> :
-        avatar.length === 0 
-        ? <View style={styles.placeholder} />
-        : <UserCard avatar={avatar} userName={user} nickName={nickName} />
+      {loading ? <LoadingCard /> :
+        avatar.length === 0
+          ? <View style={styles.placeholder} />
+          : <UserCard avatar={avatar} userName={user} nickName={nickName} />
       }
 
       <TextInput onChangeText={getData} placeholder='UserName' style={{ backgroundColor: 'white' }} />
 
-      <Button title='Go Game' onPress={() => navigation.navigate('Game', { data: data, avatar: avatar, user: user, nickName: nickName })} />
+      <Button title='Go Game' onPress={onPress} />
 
     </SafeAreaView>
   );
