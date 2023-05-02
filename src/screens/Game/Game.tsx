@@ -47,11 +47,11 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
 
-  function gameOver(reason : 'success' | 'failed') {
+  function gameOver(reason: 'success' | 'failed') {
     let title, message;
     setIsPlaying(false)
 
-    if(reason === 'success') {
+    if (reason === 'success') {
       title = 'Success'
       message = 'You collected all the commits'
     }
@@ -93,7 +93,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
     if (snakeNodes.current[0].y < 0 || snakeNodes.current[0].y > 6 * STEP ||
       locationIndex.current < 0 || locationIndex.current > heatMap.length) {
-        gameOver('failed')
+      gameOver('failed')
     }
 
     Animated.parallel([

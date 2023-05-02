@@ -29,6 +29,7 @@ function Home({ navigation }: HomeProps): JSX.Element {
 
   function getData(username: string) {
     setLoading(true)
+    setCommitCount(0)
     abort.current.abort()
     abort.current = new AbortController()
     let signal = abort.current.signal
