@@ -37,6 +37,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   const [heatMap, setHeatMap] = useState<number[]>(route.params.data)
   const [commitCount, setCommitCount] = useState(route.params.commitCount)
+  const [isPlaying, setIsPlaying] = useState(true)
 
   const head = useRef(new Animated.ValueXY()).current
   const t1 = useRef(new Animated.ValueXY()).current
@@ -56,21 +57,26 @@ function Game({ route, navigation }: GameProps): JSX.Element {
     snakeNodes.current[1].x = snakeNodes.current[0].x
     snakeNodes.current[1].y = snakeNodes.current[0].y
 
-    if (currentDirection.current === 'up' && snakeNodes.current[0].y > 0) {
+    if (currentDirection.current === 'up') {
       snakeNodes.current[0].y -= STEP
       locationIndex.current -= 1
     }
-    if (currentDirection.current === 'left' && snakeNodes.current[0].x > 0) {
+    if (currentDirection.current === 'left') {
       snakeNodes.current[0].x -= STEP
       locationIndex.current -= 7
     }
-    if (currentDirection.current === 'right' && snakeNodes.current[0].x < STEP * 52) {
+    if (currentDirection.current === 'right') {
       snakeNodes.current[0].x += STEP
       locationIndex.current += 7
     }
-    if (currentDirection.current === 'down' && snakeNodes.current[0].y < STEP * 6) {
+    if (currentDirection.current === 'down') {
       snakeNodes.current[0].y += STEP
       locationIndex.current += 1
+    }
+
+    if (snakeNodes.current[0].y < 0 || snakeNodes.current[0].y > 6 * STEP ||
+      locationIndex.current < 0 || locationIndex.current > heatMap.length) {
+      setIsPlaying(false)
     }
 
     Animated.parallel([
@@ -112,10 +118,11 @@ function Game({ route, navigation }: GameProps): JSX.Element {
   }
 
   useEffect(() => {
-    console.log(commitCount)
+    if (commitCount === 0)
+      setIsPlaying(false)
   }, [commitCount])
 
-  useInterval(tick, TICK_TIME)
+  useInterval(tick, isPlaying ? TICK_TIME : null)
 
   return (
     <SafeAreaView style={styles.main}>
