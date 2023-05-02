@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   Animated,
   Button,
   Dimensions,
@@ -46,6 +47,22 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
 
+  function gameOver(reason : 'success' | 'failed') {
+    let title, message;
+    setIsPlaying(false)
+
+    if(reason === 'success') {
+      title = 'Success'
+      message = 'You collected all the commits'
+    }
+    else {
+      title = 'Failed'
+      message = 'Snake went out of bounds'
+    }
+
+    Alert.alert(title, message, [{ text: 'Go Back', onPress: () => navigation.goBack() }])
+  }
+
 
   function tick() {
     currentDirection.current = nextDirection.current
@@ -76,7 +93,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
     if (snakeNodes.current[0].y < 0 || snakeNodes.current[0].y > 6 * STEP ||
       locationIndex.current < 0 || locationIndex.current > heatMap.length) {
-      setIsPlaying(false)
+        gameOver('failed')
     }
 
     Animated.parallel([
@@ -119,7 +136,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   useEffect(() => {
     if (commitCount === 0)
-      setIsPlaying(false)
+      gameOver('success')
   }, [commitCount])
 
   useInterval(tick, isPlaying ? TICK_TIME : null)
