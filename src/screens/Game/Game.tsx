@@ -60,7 +60,24 @@ function Game({ route, navigation }: GameProps): JSX.Element {
       message = 'Snake went out of bounds'
     }
 
-    Alert.alert(title, message, [{ text: 'Go Back', onPress: () => navigation.goBack() }])
+    Alert.alert(title, message, [{ text: 'Restart', onPress: reset }, { text: 'Go Back', onPress: () => navigation.goBack() }])
+  }
+
+  function reset() {
+    setHeatMap(route.params.data)
+    setCommitCount(route.params.commitCount)
+    currentDirection.current = ''
+    nextDirection.current = ''
+    locationIndex.current = 0
+    snakeNodes.current[0].x = 0
+    snakeNodes.current[0].y = 0
+    snakeNodes.current[1].x = 0
+    snakeNodes.current[1].y = 0
+    snakeNodes.current[2].x = 0
+    snakeNodes.current[2].y = 0
+    snakeNodes.current[3].x = 0
+    snakeNodes.current[3].y = 0
+    setIsPlaying(true)
   }
 
 
