@@ -6,6 +6,7 @@ import {
   Button,
   Dimensions,
   Easing,
+  FlatList,
   Image,
   Pressable,
   SafeAreaView,
@@ -29,6 +30,15 @@ const TICK_TIME = 300
 
 const DAYOFWEEK = new Date().getDay()
 
+function formatter(data: number[]){
+  let newData: number[][] = new Array(53)
+  for(let i = 0; i < 53; ++i){
+    newData[i] = new Array(7)
+  }
+  data.forEach((item, index) => newData[Math.floor(index/7)][index%7] = item)
+  return newData
+}
+
 function Game({ route, navigation }: GameProps): JSX.Element {
 
   const currentDirection = useRef('')
@@ -36,7 +46,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   const locationIndex = useRef(0)
 
-  const [heatMap, setHeatMap] = useState<number[]>(route.params.data)
+  const [heatMap, setHeatMap] = useState<number[][]>(() => formatter(route.params.data))
   const [commitCount, setCommitCount] = useState(route.params.commitCount)
   const [isPlaying, setIsPlaying] = useState(true)
 
@@ -46,6 +56,21 @@ function Game({ route, navigation }: GameProps): JSX.Element {
   const t3 = useRef(new Animated.ValueXY()).current
 
   const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
+
+  function renderItem({ item }: { item: number[] }) {
+
+    return(
+      <View>
+        <Tile level={item[0]}/>
+        <Tile level={item[1]}/>
+        <Tile level={item[2]}/>
+        <Tile level={item[3]}/>
+        <Tile level={item[4]}/>
+        <Tile level={item[5]}/>
+        <Tile level={item[6]}/>
+      </View>
+    )
+  }
 
   function gameOver(reason: 'success' | 'failed') {
     let title, message;
@@ -64,7 +89,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
   }
 
   function reset() {
-    setHeatMap(route.params.data)
+    setHeatMap(formatter(route.params.data))
     setCommitCount(route.params.commitCount)
     currentDirection.current = ''
     nextDirection.current = ''
@@ -109,7 +134,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
     }
 
     if (snakeNodes.current[0].y < 0 || snakeNodes.current[0].y > 6 * STEP ||
-      locationIndex.current < 0 || locationIndex.current > heatMap.length) {
+      locationIndex.current < 0 || locationIndex.current > route.params.data.length) {
       gameOver('failed')
     }
 
@@ -143,9 +168,9 @@ function Game({ route, navigation }: GameProps): JSX.Element {
       })
     ]).start()
 
-    if (heatMap[locationIndex.current] !== 0 && heatMap[locationIndex.current] !== undefined) {
+    if (heatMap[Math.floor(locationIndex.current/7)][locationIndex.current%7] !== 0 && heatMap[Math.floor(locationIndex.current/7)][locationIndex.current%7] !== undefined) {
       let newMap = [...heatMap]
-      newMap[locationIndex.current] = 0
+      newMap[Math.floor(locationIndex.current/7)][locationIndex.current%7] = 0
       setHeatMap(newMap)
       setCommitCount(c => c - 1)
     }
@@ -206,7 +231,11 @@ function Game({ route, navigation }: GameProps): JSX.Element {
         }}
         />
 
-        {heatMap.map((item, index) => <Tile level={item} key={index} />)}
+        <FlatList
+          data={heatMap}
+          renderItem={renderItem}
+          horizontal={true}
+        />
       </View>
       <View style={{ marginTop: 15 }}>
         <Button title='up' onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} />
