@@ -10,6 +10,7 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import useInterval from 'use-interval';
@@ -208,17 +209,21 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
         {heatMap.map((item, index) => <Tile level={item} key={index} />)}
       </View>
-      <View style={{ marginTop: 15 }}>
-        <Button title='up' onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} />
-        <View style={{ flexDirection: 'row' }}>
-          <View style={{ width: '50%' }}>
-            <Button title='left' onPress={() => { if (currentDirection.current !== 'right') nextDirection.current = 'left' }} />
-          </View>
-          <View style={{ width: '50%' }}>
-            <Button title='right' onPress={() => { if (currentDirection.current !== 'left') nextDirection.current = 'right' }} />
-          </View>
+      <View style={ styles.buttonContainer }>
+        <Pressable style={ styles.button } onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} >
+          <Text style={ styles.text } >Up</Text>
+        </Pressable>
+        <View style={ styles.middleRow }>
+          <Pressable style={ styles.button } onPress={() => { if (currentDirection.current !== 'right') nextDirection.current = 'left' }} >
+            <Text style={ styles.text } >Left</Text>
+           </Pressable>
+           <Pressable style={ styles.button } onPress={() => { if (currentDirection.current !== 'left') nextDirection.current = 'right' }} >
+            <Text style={ styles.text } >Right</Text>
+           </Pressable>
         </View>
-        <Button title='down' onPress={() => { if (currentDirection.current !== 'up') nextDirection.current = 'down' }} />
+        <Pressable style={ styles.button } onPress={() => { if (currentDirection.current !== 'up') nextDirection.current = 'down' }} >
+          <Text style={ styles.text } >Down</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -256,8 +261,7 @@ const styles = StyleSheet.create({
   board: {
     flexWrap: 'wrap',
     width: '100%',
-    height: (STEP) * 7,
-    marginTop: 16
+    height: (STEP) * 7
   },
 
   head: {
@@ -278,7 +282,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'purple',
     zIndex: 1,
     position: 'absolute',
-  }
+  },
+
+  buttonContainer: { flex: 1, marginTop: 4 },
+
+  middleRow: { flexDirection: 'row', flex: 1 },
+
+  button: {
+    flex: 1,
+    backgroundColor: '#f0f6fc',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 2,
+    borderRadius: 8
+  },
+
+  text: {fontSize: 16, fontWeight: '800'}
 });
 
 export default Game;
