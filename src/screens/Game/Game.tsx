@@ -37,8 +37,9 @@ function Game({ route, navigation }: GameProps): JSX.Element {
 
   const locationIndex = useRef(0)
 
-  const [heatMap, setHeatMap] = useState<number[]>(route.params.data)
-  const [commitCount, setCommitCount] = useState(route.params.commitCount)
+  const commits = useRef([...route.params.data])
+  const [heatMap, setHeatMap] = useState(() => route.params.data.map((item, index) => <Tile level={item} key={index} />))
+  const commitCount = useRef(route.params.commitCount)
   const [isPlaying, setIsPlaying] = useState(true)
 
   const head = useRef(new Animated.ValueXY()).current
@@ -65,8 +66,9 @@ function Game({ route, navigation }: GameProps): JSX.Element {
   }
 
   function reset() {
-    setHeatMap(route.params.data)
-    setCommitCount(route.params.commitCount)
+    setHeatMap(route.params.data.map((item, index) => { return <Tile level={item} key={index} /> }))
+    commitCount.current = route.params.commitCount
+    commits.current = [...route.params.data]
     currentDirection.current = ''
     nextDirection.current = ''
     locationIndex.current = 0
@@ -144,18 +146,17 @@ function Game({ route, navigation }: GameProps): JSX.Element {
       })
     ]).start()
 
-    if (heatMap[locationIndex.current] !== 0 && heatMap[locationIndex.current] !== undefined) {
+    if (commits.current[locationIndex.current] !== 0) {
       let newMap = [...heatMap]
-      newMap[locationIndex.current] = 0
+      newMap[locationIndex.current] = <Tile level={0} key={locationIndex.current} />
+      commits.current[locationIndex.current] = 0
       setHeatMap(newMap)
-      setCommitCount(c => c - 1)
+      commitCount.current -= 1
+      if (commitCount.current === 0)
+        gameOver('success')
     }
-  }
 
-  useEffect(() => {
-    if (commitCount === 0)
-      gameOver('success')
-  }, [commitCount])
+  }
 
   useInterval(tick, isPlaying ? TICK_TIME : null)
 
@@ -207,22 +208,22 @@ function Game({ route, navigation }: GameProps): JSX.Element {
         }}
         />
 
-        {heatMap.map((item, index) => <Tile level={item} key={index} />)}
+        {heatMap}
       </View>
-      <View style={ styles.buttonContainer }>
-        <Pressable style={ styles.button } onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} >
-          <Text style={ styles.text } >Up</Text>
+      <View style={styles.buttonContainer}>
+        <Pressable style={styles.button} onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} >
+          <Text style={styles.text} >Up</Text>
         </Pressable>
-        <View style={ styles.middleRow }>
-          <Pressable style={ styles.button } onPress={() => { if (currentDirection.current !== 'right') nextDirection.current = 'left' }} >
-            <Text style={ styles.text } >Left</Text>
-           </Pressable>
-           <Pressable style={ styles.button } onPress={() => { if (currentDirection.current !== 'left') nextDirection.current = 'right' }} >
-            <Text style={ styles.text } >Right</Text>
-           </Pressable>
+        <View style={styles.middleRow}>
+          <Pressable style={styles.button} onPress={() => { if (currentDirection.current !== 'right') nextDirection.current = 'left' }} >
+            <Text style={styles.text} >Left</Text>
+          </Pressable>
+          <Pressable style={styles.button} onPress={() => { if (currentDirection.current !== 'left') nextDirection.current = 'right' }} >
+            <Text style={styles.text} >Right</Text>
+          </Pressable>
         </View>
-        <Pressable style={ styles.button } onPress={() => { if (currentDirection.current !== 'up') nextDirection.current = 'down' }} >
-          <Text style={ styles.text } >Down</Text>
+        <Pressable style={styles.button} onPress={() => { if (currentDirection.current !== 'up') nextDirection.current = 'down' }} >
+          <Text style={styles.text} >Down</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -297,7 +298,7 @@ const styles = StyleSheet.create({
     borderRadius: 8
   },
 
-  text: {fontSize: 16, fontWeight: '800'}
+  text: { fontSize: 16, fontWeight: '800' }
 });
 
 export default Game;
