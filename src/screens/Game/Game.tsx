@@ -18,17 +18,12 @@ import Tile from '../../components/Tile';
 import { GameProps } from '../../types';
 import { useFocusEffect } from '@react-navigation/native';
 import UserCard from '../../components/UserCard';
+import { STEP, TICK_TIME } from '../../constants';
 
 interface snakeNode {
   x: number;
   y: number;
 }
-
-const WIDTH = Dimensions.get('window').width
-const STEP = Math.floor(WIDTH / 53)
-const TICK_TIME = 300
-
-const DAYOFWEEK = new Date().getDay()
 
 function Game({ route, navigation }: GameProps): JSX.Element {
 

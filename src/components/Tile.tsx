@@ -1,9 +1,6 @@
 import React from "react"
 import { Dimensions, StyleSheet, View } from "react-native"
-
-const WIDTH = Dimensions.get('window').width
-const STEP = Math.floor(WIDTH / 53)
-
+import { STEP } from "../constants"
 
 const colors = [
   '#161b22',
