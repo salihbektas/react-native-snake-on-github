@@ -9,7 +9,7 @@ function UserCard({ userName, nickName, avatar }: { userName: string, nickName: 
         <Text style={styles.name}>{userName}</Text>
         <Text style={styles.nickName}>{nickName}</Text>
       </View>
-      <Image src={avatar} style={styles.avatar} />
+      <Image source={{uri: avatar}} style={styles.avatar} />
     </View>
   )
 }
