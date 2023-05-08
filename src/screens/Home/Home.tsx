@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useTransition } from 'react';
 import {
   Alert,
   Button,
+  Keyboard,
   SafeAreaView,
   StyleSheet,
   TextInput,
@@ -63,8 +64,10 @@ function Home({ navigation }: HomeProps): JSX.Element {
   function onPress() {
     if (commitCount === 0)
       Alert.alert('Game Cannot Start', `${nickName} did not make any contributions last year.`, [{ text: 'OK' }])
-    else
+    else{
+      Keyboard.dismiss()
       navigation.navigate('Game', { data: data, avatar: avatar, user: user, nickName: nickName, commitCount: commitCount })
+    }
   }
 
   return (
