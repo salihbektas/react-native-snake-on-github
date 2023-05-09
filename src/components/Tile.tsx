@@ -7,7 +7,8 @@ const colors = [
   '#0e4429',
   '#006d32',
   '#26a641',
-  '#39d353'
+  '#39d353',
+  '#0d1117'
 ]
 
 function Tile({ level }: { level: number }) {
@@ -19,10 +20,10 @@ function Tile({ level }: { level: number }) {
 
 const styles = StyleSheet.create({
   tile: {
-    height: STEP - 2,
-    width: STEP - 2,
-    marginBottom: 2,
-    marginRight: 2,
+    height: STEP,
+    width: STEP,
+    borderWidth: 1,
+    borderColor: colors[5],
     borderRadius: 2
   },
 })
