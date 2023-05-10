@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
 
   placeholder: {
     height: 120,
-    marginVertical: 16
+    marginVertical: 8
   }
 });
 
