@@ -13,10 +13,12 @@ import { HomeProps } from '../../types';
 import * as Cheerio from 'cheerio';
 import UserCard from '../../components/UserCard';
 import LoadingCard from '../../components/LoadingCard';
+import NoUserCard from '../../components/NoUserCard';
 
 
 function Home({ navigation }: HomeProps): JSX.Element {
 
+  const [input, setInput] = useState('')
   const [user, setUser] = useState('')
   const [nickName, setNickName] = useState('')
   const [avatar, setAvatar] = useState('')
@@ -29,6 +31,7 @@ function Home({ navigation }: HomeProps): JSX.Element {
 
 
   function getData(username: string) {
+    setInput(username)
     setLoading(true)
     setCommitCount(0)
     abort.current.abort()
@@ -72,13 +75,14 @@ function Home({ navigation }: HomeProps): JSX.Element {
 
   return (
     <SafeAreaView style={styles.main}>
-      {loading ? <LoadingCard /> :
+      { loading ? <LoadingCard /> :
+        input.length === 0 ? <View style={styles.placeholder} /> :
         avatar.length === 0
-          ? <View style={styles.placeholder} />
+          ? <NoUserCard input={input} />
           : <UserCard avatar={avatar} userName={user} nickName={nickName} />
       }
 
-      <TextInput onChangeText={getData} placeholder='UserName' style={{ backgroundColor: 'white' }} />
+      <TextInput value={input} onChangeText={getData} placeholder='UserName' style={{ backgroundColor: 'white' }} />
 
       <Button title='Go Game' onPress={onPress} />
 
