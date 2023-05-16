@@ -67,14 +67,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
     currentDirection.current = ''
     nextDirection.current = ''
     locationIndex.current = 0
-    snakeNodes.current[0].x = 0
-    snakeNodes.current[0].y = 0
-    snakeNodes.current[1].x = 0
-    snakeNodes.current[1].y = 0
-    snakeNodes.current[2].x = 0
-    snakeNodes.current[2].y = 0
-    snakeNodes.current[3].x = 0
-    snakeNodes.current[3].y = 0
+    snakeNodes.current = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }]
     setIsPlaying(true)
   }
 
@@ -82,12 +75,10 @@ function Game({ route, navigation }: GameProps): JSX.Element {
   function tick() {
     currentDirection.current = nextDirection.current
 
-    snakeNodes.current[3].x = snakeNodes.current[2].x
-    snakeNodes.current[3].y = snakeNodes.current[2].y
-    snakeNodes.current[2].x = snakeNodes.current[1].x
-    snakeNodes.current[2].y = snakeNodes.current[1].y
-    snakeNodes.current[1].x = snakeNodes.current[0].x
-    snakeNodes.current[1].y = snakeNodes.current[0].y
+    for(let i = 3; i > 0; --i){
+      snakeNodes.current[i].x = snakeNodes.current[i-1].x
+      snakeNodes.current[i].y = snakeNodes.current[i-1].y
+    }
 
     if (currentDirection.current === 'up') {
       snakeNodes.current[0].y -= STEP
