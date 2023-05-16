@@ -31,6 +31,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
   const nextDirection = useRef('')
 
   const locationIndex = useRef(0)
+  const verticalLocation = useRef(0)
 
   const commits = useRef([...route.params.data])
   const [heatMap, setHeatMap] = useState(() => route.params.data.map((item, index) => <Tile level={item} key={index} />))
@@ -67,6 +68,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
     currentDirection.current = ''
     nextDirection.current = ''
     locationIndex.current = 0
+    verticalLocation.current = 0
     snakeNodes.current = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }]
     setIsPlaying(true)
   }
@@ -83,6 +85,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
     if (currentDirection.current === 'up') {
       snakeNodes.current[0].y -= STEP
       locationIndex.current -= 1
+      verticalLocation.current -= 1
     }
     if (currentDirection.current === 'left') {
       snakeNodes.current[0].x -= STEP
@@ -95,9 +98,10 @@ function Game({ route, navigation }: GameProps): JSX.Element {
     if (currentDirection.current === 'down') {
       snakeNodes.current[0].y += STEP
       locationIndex.current += 1
+      verticalLocation.current += 1
     }
 
-    if (snakeNodes.current[0].y < 0 || snakeNodes.current[0].y > 6 * STEP ||
+    if (verticalLocation.current < 0 || verticalLocation.current > 6 ||
       locationIndex.current < 0 || locationIndex.current > heatMap.length) {
       gameOver('failed')
     }
