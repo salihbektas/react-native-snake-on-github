@@ -201,7 +201,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
         {heatMap}
       </View>
       <View style={styles.buttonContainer}>
-        <Pressable style={styles.button} onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} >
+        <Pressable style={{...styles.button, marginVertical: 2}} onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} >
           <Text style={styles.text} >Up</Text>
         </Pressable>
         <View style={styles.middleRow}>
@@ -212,7 +212,7 @@ function Game({ route, navigation }: GameProps): JSX.Element {
             <Text style={styles.text} >Right</Text>
           </Pressable>
         </View>
-        <Pressable style={styles.button} onPress={() => { if (currentDirection.current !== 'up') nextDirection.current = 'down' }} >
+        <Pressable style={{...styles.button, marginVertical: 2}} onPress={() => { if (currentDirection.current !== 'up') nextDirection.current = 'down' }} >
           <Text style={styles.text} >Down</Text>
         </Pressable>
       </View>
@@ -277,14 +277,18 @@ const styles = StyleSheet.create({
 
   buttonContainer: { flex: 1, marginTop: 4 },
 
-  middleRow: { flexDirection: 'row', flex: 1 },
+  middleRow: {
+    flexDirection: 'row',
+    flex: 1 ,
+    marginVertical: 2
+  },
 
   button: {
     flex: 1,
     backgroundColor: '#f0f6fc',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 2,
+    marginHorizontal: 2,
     borderRadius: 8
   },
 
