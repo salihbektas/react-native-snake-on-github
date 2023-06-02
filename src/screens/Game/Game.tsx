@@ -229,8 +229,7 @@ const styles = StyleSheet.create({
 
   topContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingTop: 16
+    paddingHorizontal: 16
   },
 
   backContainer: { marginRight: "auto" },
@@ -238,7 +237,8 @@ const styles = StyleSheet.create({
   back: {
     height: 30,
     width: 30,
-    tintColor: 'white'
+    tintColor: 'white',
+    marginTop: 8
   },
 
   tile: {
