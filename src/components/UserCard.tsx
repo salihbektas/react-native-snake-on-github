@@ -1,8 +1,15 @@
-import React from "react"
-import { Image, StyleSheet, Text, View } from "react-native"
+import React from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
 
-function UserCard({ userName, nickName, avatar }: { userName: string, nickName: string, avatar: string }) {
-
+function UserCard({
+  userName,
+  nickName,
+  avatar,
+}: {
+  userName: string;
+  nickName: string;
+  avatar: string;
+}) {
   return (
     <View style={styles.main}>
       <View style={{}}>
@@ -11,32 +18,32 @@ function UserCard({ userName, nickName, avatar }: { userName: string, nickName: 
       </View>
       <Image source={{uri: avatar}} style={styles.avatar} />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   main: {
     flexDirection: 'row',
     marginLeft: 'auto',
-    marginVertical: 8
+    marginVertical: 8,
   },
 
   name: {
     color: 'white',
-    fontSize: 24
+    fontSize: 24,
   },
 
   nickName: {
     color: 'gray',
-    fontSize: 20
+    fontSize: 20,
   },
 
   avatar: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    marginLeft: 16
-  }
+    marginLeft: 16,
+  },
 });
 
 export default UserCard;

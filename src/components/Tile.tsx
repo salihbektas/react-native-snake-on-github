@@ -1,6 +1,6 @@
-import React from "react"
-import { Dimensions, StyleSheet, View } from "react-native"
-import { STEP } from "../constants"
+import React from 'react';
+import {Dimensions, StyleSheet, View} from 'react-native';
+import {STEP} from '../constants';
 
 const colors = [
   '#161b22',
@@ -8,15 +8,12 @@ const colors = [
   '#006d32',
   '#26a641',
   '#39d353',
-  '#0d1117'
-]
+  '#0d1117',
+];
 
-function Tile({ level }: { level: number }) {
-  return (
-    <View style={{ ...styles.tile, backgroundColor: colors[level] }} />
-  )
+function Tile({level}: {level: number}) {
+  return <View style={{...styles.tile, backgroundColor: colors[level]}} />;
 }
-
 
 const styles = StyleSheet.create({
   tile: {
@@ -24,8 +21,8 @@ const styles = StyleSheet.create({
     width: STEP,
     borderWidth: 1,
     borderColor: colors[5],
-    borderRadius: 2
+    borderRadius: 2,
   },
-})
+});
 
-export default React.memo(Tile)
+export default React.memo(Tile);

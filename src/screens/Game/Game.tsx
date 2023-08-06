@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Animated,
@@ -15,205 +15,245 @@ import {
 } from 'react-native';
 import useInterval from 'use-interval';
 import Tile from '../../components/Tile';
-import { GameProps } from '../../types';
-import { useFocusEffect } from '@react-navigation/native';
+import {GameProps} from '../../types';
+import {useFocusEffect} from '@react-navigation/native';
 import UserCard from '../../components/UserCard';
-import { STEP, TICK_TIME } from '../../constants';
+import {STEP, TICK_TIME} from '../../constants';
 
 interface snakeNode {
   x: number;
   y: number;
 }
 
-function Game({ route, navigation }: GameProps): JSX.Element {
+function Game({route, navigation}: GameProps): JSX.Element {
+  const currentDirection = useRef('');
+  const nextDirection = useRef('');
 
-  const currentDirection = useRef('')
-  const nextDirection = useRef('')
+  const locationIndex = useRef(0);
+  const verticalLocation = useRef(0);
 
-  const locationIndex = useRef(0)
-  const verticalLocation = useRef(0)
+  const commits = useRef([...route.params.data]);
+  const [heatMap, setHeatMap] = useState(() =>
+    route.params.data.map((item, index) => <Tile level={item} key={index} />),
+  );
+  const commitCount = useRef(route.params.commitCount);
+  const [isPlaying, setIsPlaying] = useState(true);
 
-  const commits = useRef([...route.params.data])
-  const [heatMap, setHeatMap] = useState(() => route.params.data.map((item, index) => <Tile level={item} key={index} />))
-  const commitCount = useRef(route.params.commitCount)
-  const [isPlaying, setIsPlaying] = useState(true)
+  const head = useRef(new Animated.ValueXY()).current;
+  const t1 = useRef(new Animated.ValueXY()).current;
+  const t2 = useRef(new Animated.ValueXY()).current;
+  const t3 = useRef(new Animated.ValueXY()).current;
 
-  const head = useRef(new Animated.ValueXY()).current
-  const t1 = useRef(new Animated.ValueXY()).current
-  const t2 = useRef(new Animated.ValueXY()).current
-  const t3 = useRef(new Animated.ValueXY()).current
-
-  const snakeNodes = useRef<snakeNode[]>([{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }])
+  const snakeNodes = useRef<snakeNode[]>([
+    {x: 0, y: 0},
+    {x: 0, y: 0},
+    {x: 0, y: 0},
+    {x: 0, y: 0},
+  ]);
 
   function gameOver(reason: 'success' | 'failed') {
     let title, message;
-    setIsPlaying(false)
+    setIsPlaying(false);
 
     if (reason === 'success') {
-      title = 'Success'
-      message = 'You collected all the commits'
-    }
-    else {
-      title = 'Failed'
-      message = 'Snake went out of bounds'
+      title = 'Success';
+      message = 'You collected all the commits';
+    } else {
+      title = 'Failed';
+      message = 'Snake went out of bounds';
     }
 
-    Alert.alert(title, message, [{ text: 'Restart', onPress: reset }, { text: 'Go Back', onPress: () => navigation.goBack() }])
+    Alert.alert(title, message, [
+      {text: 'Restart', onPress: reset},
+      {text: 'Go Back', onPress: () => navigation.goBack()},
+    ]);
   }
 
   function reset() {
-    setHeatMap(route.params.data.map((item, index) => { return <Tile level={item} key={index} /> }))
-    commitCount.current = route.params.commitCount
-    commits.current = [...route.params.data]
-    currentDirection.current = ''
-    nextDirection.current = ''
-    locationIndex.current = 0
-    verticalLocation.current = 0
-    snakeNodes.current = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }]
-    setIsPlaying(true)
+    setHeatMap(
+      route.params.data.map((item, index) => {
+        return <Tile level={item} key={index} />;
+      }),
+    );
+    commitCount.current = route.params.commitCount;
+    commits.current = [...route.params.data];
+    currentDirection.current = '';
+    nextDirection.current = '';
+    locationIndex.current = 0;
+    verticalLocation.current = 0;
+    snakeNodes.current = [
+      {x: 0, y: 0},
+      {x: 0, y: 0},
+      {x: 0, y: 0},
+      {x: 0, y: 0},
+    ];
+    setIsPlaying(true);
   }
 
-
   function tick() {
-    currentDirection.current = nextDirection.current
+    currentDirection.current = nextDirection.current;
 
-    for(let i = 3; i > 0; --i){
-      snakeNodes.current[i].x = snakeNodes.current[i-1].x
-      snakeNodes.current[i].y = snakeNodes.current[i-1].y
+    for (let i = 3; i > 0; --i) {
+      snakeNodes.current[i].x = snakeNodes.current[i - 1].x;
+      snakeNodes.current[i].y = snakeNodes.current[i - 1].y;
     }
 
     if (currentDirection.current === 'up') {
-      snakeNodes.current[0].y -= STEP
-      locationIndex.current -= 1
-      verticalLocation.current -= 1
+      snakeNodes.current[0].y -= STEP;
+      locationIndex.current -= 1;
+      verticalLocation.current -= 1;
     }
     if (currentDirection.current === 'left') {
-      snakeNodes.current[0].x -= STEP
-      locationIndex.current -= 7
+      snakeNodes.current[0].x -= STEP;
+      locationIndex.current -= 7;
     }
     if (currentDirection.current === 'right') {
-      snakeNodes.current[0].x += STEP
-      locationIndex.current += 7
+      snakeNodes.current[0].x += STEP;
+      locationIndex.current += 7;
     }
     if (currentDirection.current === 'down') {
-      snakeNodes.current[0].y += STEP
-      locationIndex.current += 1
-      verticalLocation.current += 1
+      snakeNodes.current[0].y += STEP;
+      locationIndex.current += 1;
+      verticalLocation.current += 1;
     }
 
-    if (verticalLocation.current < 0 || verticalLocation.current > 6 ||
-      locationIndex.current < 0 || locationIndex.current > heatMap.length) {
-      gameOver('failed')
+    if (
+      verticalLocation.current < 0 ||
+      verticalLocation.current > 6 ||
+      locationIndex.current < 0 ||
+      locationIndex.current > heatMap.length
+    ) {
+      gameOver('failed');
     }
 
     Animated.parallel([
       Animated.timing(head, {
-        toValue: { x: snakeNodes.current[0].x, y: snakeNodes.current[0].y },
+        toValue: {x: snakeNodes.current[0].x, y: snakeNodes.current[0].y},
         duration: TICK_TIME,
         easing: Easing.linear,
         useNativeDriver: true,
       }),
 
       Animated.timing(t1, {
-        toValue: { x: snakeNodes.current[1].x, y: snakeNodes.current[1].y },
+        toValue: {x: snakeNodes.current[1].x, y: snakeNodes.current[1].y},
         duration: TICK_TIME,
         easing: Easing.linear,
         useNativeDriver: true,
       }),
 
       Animated.timing(t2, {
-        toValue: { x: snakeNodes.current[2].x, y: snakeNodes.current[2].y },
+        toValue: {x: snakeNodes.current[2].x, y: snakeNodes.current[2].y},
         duration: TICK_TIME,
         easing: Easing.linear,
         useNativeDriver: true,
       }),
 
       Animated.timing(t3, {
-        toValue: { x: snakeNodes.current[3].x, y: snakeNodes.current[3].y },
+        toValue: {x: snakeNodes.current[3].x, y: snakeNodes.current[3].y},
         duration: TICK_TIME,
         easing: Easing.linear,
         useNativeDriver: true,
-      })
-    ]).start()
+      }),
+    ]).start();
 
     if (commits.current[locationIndex.current] !== 0) {
-      let newMap = [...heatMap]
-      newMap[locationIndex.current] = <Tile level={0} key={locationIndex.current} />
-      commits.current[locationIndex.current] = 0
-      setHeatMap(newMap)
-      commitCount.current -= 1
-      if (commitCount.current === 0)
-        gameOver('success')
+      let newMap = [...heatMap];
+      newMap[locationIndex.current] = (
+        <Tile level={0} key={locationIndex.current} />
+      );
+      commits.current[locationIndex.current] = 0;
+      setHeatMap(newMap);
+      commitCount.current -= 1;
+      if (commitCount.current === 0) gameOver('success');
     }
-
   }
 
-  useInterval(tick, isPlaying ? TICK_TIME : null)
+  useInterval(tick, isPlaying ? TICK_TIME : null);
 
   return (
     <SafeAreaView style={styles.main}>
-
       <View style={styles.topContainer}>
-        <Pressable onPress={() => navigation.goBack()} style={styles.backContainer} >
-          <Image source={require("../../../assets/arrow.png")} style={styles.back} />
+        <Pressable
+          onPress={() => navigation.goBack()}
+          style={styles.backContainer}>
+          <Image
+            source={require('../../../assets/arrow.png')}
+            style={styles.back}
+          />
         </Pressable>
 
-        <UserCard avatar={route.params.avatar} nickName={route.params.nickName} userName={route.params.user} />
+        <UserCard
+          avatar={route.params.avatar}
+          nickName={route.params.nickName}
+          userName={route.params.user}
+        />
       </View>
 
       <View style={styles.board}>
-        <Animated.View style={{
-          ...styles.head,
-          transform: [
-            { translateX: head.x },
-            { translateY: head.y }
-          ]
-        }}
+        <Animated.View
+          style={{
+            ...styles.head,
+            transform: [{translateX: head.x}, {translateY: head.y}],
+          }}
         />
 
-        <Animated.View style={{
-          ...styles.tail,
-          transform: [
-            { translateX: t1.x },
-            { translateY: t1.y }
-          ]
-        }}
+        <Animated.View
+          style={{
+            ...styles.tail,
+            transform: [{translateX: t1.x}, {translateY: t1.y}],
+          }}
         />
 
-        <Animated.View style={{
-          ...styles.tail,
-          transform: [
-            { translateX: t2.x },
-            { translateY: t2.y }
-          ]
-        }}
+        <Animated.View
+          style={{
+            ...styles.tail,
+            transform: [{translateX: t2.x}, {translateY: t2.y}],
+          }}
         />
 
-        <Animated.View style={{
-          ...styles.tail,
-          transform: [
-            { translateX: t3.x },
-            { translateY: t3.y }
-          ]
-        }}
+        <Animated.View
+          style={{
+            ...styles.tail,
+            transform: [{translateX: t3.x}, {translateY: t3.y}],
+          }}
         />
 
         {heatMap}
       </View>
       <View style={styles.buttonContainer}>
-        <Pressable style={{...styles.button, marginVertical: 2}} onPress={() => { if (currentDirection.current !== 'down') nextDirection.current = 'up' }} >
-          <Text style={styles.text} >Up</Text>
+        <Pressable
+          style={{...styles.button, marginVertical: 2}}
+          onPress={() => {
+            if (currentDirection.current !== 'down')
+              nextDirection.current = 'up';
+          }}>
+          <Text style={styles.text}>Up</Text>
         </Pressable>
         <View style={styles.middleRow}>
-          <Pressable style={styles.button} onPress={() => { if (currentDirection.current !== 'right') nextDirection.current = 'left' }} >
-            <Text style={styles.text} >Left</Text>
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              if (currentDirection.current !== 'right')
+                nextDirection.current = 'left';
+            }}>
+            <Text style={styles.text}>Left</Text>
           </Pressable>
-          <Pressable style={styles.button} onPress={() => { if (currentDirection.current !== 'left') nextDirection.current = 'right' }} >
-            <Text style={styles.text} >Right</Text>
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              if (currentDirection.current !== 'left')
+                nextDirection.current = 'right';
+            }}>
+            <Text style={styles.text}>Right</Text>
           </Pressable>
         </View>
-        <Pressable style={{...styles.button, marginVertical: 2}} onPress={() => { if (currentDirection.current !== 'up') nextDirection.current = 'down' }} >
-          <Text style={styles.text} >Down</Text>
+        <Pressable
+          style={{...styles.button, marginVertical: 2}}
+          onPress={() => {
+            if (currentDirection.current !== 'up')
+              nextDirection.current = 'down';
+          }}>
+          <Text style={styles.text}>Down</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -224,21 +264,21 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#0d1117'
+    backgroundColor: '#0d1117',
   },
 
   topContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
 
-  backContainer: { marginRight: "auto" },
+  backContainer: {marginRight: 'auto'},
 
   back: {
     height: 30,
     width: 30,
     tintColor: 'white',
-    marginTop: 8
+    marginTop: 8,
   },
 
   tile: {
@@ -246,13 +286,13 @@ const styles = StyleSheet.create({
     width: STEP - 2,
     marginBottom: 2,
     marginRight: 2,
-    borderRadius: 2
+    borderRadius: 2,
   },
 
   board: {
     flexWrap: 'wrap',
     width: '100%',
-    height: (STEP) * 7
+    height: STEP * 7,
   },
 
   head: {
@@ -263,7 +303,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     position: 'absolute',
     top: -1,
-    left: -1
+    left: -1,
   },
 
   tail: {
@@ -275,12 +315,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
 
-  buttonContainer: { flex: 1, marginTop: 4 },
+  buttonContainer: {flex: 1, marginTop: 4},
 
   middleRow: {
     flexDirection: 'row',
-    flex: 1 ,
-    marginVertical: 2
+    flex: 1,
+    marginVertical: 2,
   },
 
   button: {
@@ -289,10 +329,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 2,
-    borderRadius: 8
+    borderRadius: 8,
   },
 
-  text: { fontSize: 16, fontWeight: '800' }
+  text: {fontSize: 16, fontWeight: '800'},
 });
 
 export default Game;
