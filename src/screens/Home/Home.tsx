@@ -40,9 +40,7 @@ function Home({navigation}: HomeProps): JSX.Element {
       .then(value => {
         startTransition(() => {
           const $ = Cheerio.load(value);
-          const $days = $(
-            'svg.js-calendar-graph-svg rect.ContributionCalendar-day',
-          );
+          const $days = $('td.ContributionCalendar-day');
           const $avatar = $(
             '.avatar.avatar-user.width-full.border.color-bg-default',
           );
@@ -53,11 +51,21 @@ function Home({navigation}: HomeProps): JSX.Element {
           const temp = $avatar.attr('src');
           temp !== undefined ? setAvatar(temp) : setAvatar('');
           let newData: number[] = [];
+          let iter = 0;
+          let ix = 0;
           $($days.get()).each((i, day) => {
-            let dataLevel = $(day).attr('data-level');
-            if (dataLevel !== undefined) newData[i] = parseInt(dataLevel);
+            let dataLevel = parseInt($(day).attr('data-level') as string);
+            let dataIx = parseInt($(day).attr('data-ix') as string);
 
-            if (newData[i] > 0) setCommitCount(c => c + 1);
+            if (dataIx === ix) ++ix;
+            else {
+              ix = 1;
+              ++iter;
+            }
+
+            newData[iter + dataIx * 7] = dataLevel;
+
+            if (dataLevel > 0) setCommitCount(c => c + 1);
           });
           setData(newData);
           setLoading(false);
