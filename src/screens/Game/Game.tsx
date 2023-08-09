@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Alert,
   Animated,
@@ -32,10 +32,10 @@ function Game({route, navigation}: GameProps): JSX.Element {
   const locationIndex = useRef(0);
   const verticalLocation = useRef(0);
 
-  const commits = useRef([...route.params.data]);
-  const [heatMap, setHeatMap] = useState(() =>
-    route.params.data.map((item, index) => <Tile level={item} key={index} />),
-  );
+  const [commits, setCommits] = useState([...route.params.data]);
+  const heatMap = useMemo(() => {
+    return commits.map((item, index) => <Tile level={item} key={index} />);
+  }, [commits]);
   const commitCount = useRef(route.params.commitCount);
   const [isPlaying, setIsPlaying] = useState(true);
 
@@ -70,13 +70,8 @@ function Game({route, navigation}: GameProps): JSX.Element {
   }
 
   function reset() {
-    setHeatMap(
-      route.params.data.map((item, index) => {
-        return <Tile level={item} key={index} />;
-      }),
-    );
     commitCount.current = route.params.commitCount;
-    commits.current = [...route.params.data];
+    setCommits([...route.params.data]);
     currentDirection.current = '';
     nextDirection.current = '';
     locationIndex.current = 0;
@@ -156,13 +151,10 @@ function Game({route, navigation}: GameProps): JSX.Element {
       }),
     ]).start();
 
-    if (commits.current[locationIndex.current] !== 0) {
-      let newMap = [...heatMap];
-      newMap[locationIndex.current] = (
-        <Tile level={0} key={locationIndex.current} />
-      );
-      commits.current[locationIndex.current] = 0;
-      setHeatMap(newMap);
+    if (commits[locationIndex.current] !== 0) {
+      const newCommits = [...commits];
+      newCommits[locationIndex.current] = 0;
+      setCommits(newCommits);
       commitCount.current -= 1;
       if (commitCount.current === 0) gameOver('success');
     }
