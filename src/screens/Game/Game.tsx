@@ -120,6 +120,10 @@ function Game({route, navigation}: GameProps): JSX.Element {
   }
 
   function tick() {
+    if (nextDirection.current === '') {
+      return;
+    }
+
     currentDirection.current = nextDirection.current;
 
     for (let i = 3; i > 0; --i) {
