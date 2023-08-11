@@ -126,6 +126,14 @@ function Game({route, navigation}: GameProps): JSX.Element {
 
     currentDirection.current = nextDirection.current;
 
+    if (commits[locationIndex.current] !== 0) {
+      const newCommits = [...commits];
+      newCommits[locationIndex.current] = 0;
+      setCommits(newCommits);
+      commitCount.current -= 1;
+      if (commitCount.current === 0) gameOver('success');
+    }
+
     for (let i = 3; i > 0; --i) {
       snakeNodes.current[i].x = snakeNodes.current[i - 1].x;
       snakeNodes.current[i].y = snakeNodes.current[i - 1].y;
@@ -160,14 +168,6 @@ function Game({route, navigation}: GameProps): JSX.Element {
     }
 
     animateSnake();
-
-    if (commits[locationIndex.current] !== 0) {
-      const newCommits = [...commits];
-      newCommits[locationIndex.current] = 0;
-      setCommits(newCommits);
-      commitCount.current -= 1;
-      if (commitCount.current === 0) gameOver('success');
-    }
   }
 
   useInterval(tick, isPlaying ? TICK_TIME : null);
