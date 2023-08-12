@@ -1,10 +1,7 @@
-import * as cheerio from 'cheerio';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {
   Alert,
   Animated,
-  Button,
-  Dimensions,
   Easing,
   Image,
   Pressable,
@@ -16,7 +13,6 @@ import {
 import useInterval from 'use-interval';
 import Tile from '../../components/Tile';
 import {GameProps} from '../../types';
-import {useFocusEffect} from '@react-navigation/native';
 import UserCard from '../../components/UserCard';
 import {STEP, TICK_TIME} from '../../constants';
 

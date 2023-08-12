@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState, useTransition} from 'react';
+import React, {useRef, useState, useTransition} from 'react';
 import {
   Alert,
   Button,
