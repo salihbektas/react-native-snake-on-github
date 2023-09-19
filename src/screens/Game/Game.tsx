@@ -158,7 +158,7 @@ function Game({route, navigation}: GameProps): JSX.Element {
       verticalLocation.current < 0 ||
       verticalLocation.current > 6 ||
       locationIndex.current < 0 ||
-      locationIndex.current > heatMap.length
+      locationIndex.current >= heatMap.length
     ) {
       gameOver('failed');
     }
