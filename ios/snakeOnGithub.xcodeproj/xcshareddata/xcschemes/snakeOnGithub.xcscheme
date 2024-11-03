@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "snakeOnGithub.app"
-               BlueprintName = "snakeOnGithub"
-               ReferencedContainer = "container:snakeOnGithub.xcodeproj">
+               BuildableName = "SnakeOnGithub.app"
+               BlueprintName = "SnakeOnGithub"
+               ReferencedContainer = "container:SnakeOnGithub.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "snakeOnGithubTests.xctest"
-               BlueprintName = "snakeOnGithubTests"
-               ReferencedContainer = "container:snakeOnGithub.xcodeproj">
+               BuildableName = "SnakeOnGithubTests.xctest"
+               BlueprintName = "SnakeOnGithubTests"
+               ReferencedContainer = "container:SnakeOnGithub.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "snakeOnGithub.app"
-            BlueprintName = "snakeOnGithub"
-            ReferencedContainer = "container:snakeOnGithub.xcodeproj">
+            BuildableName = "SnakeOnGithub.app"
+            BlueprintName = "SnakeOnGithub"
+            ReferencedContainer = "container:SnakeOnGithub.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "snakeOnGithub.app"
-            BlueprintName = "snakeOnGithub"
-            ReferencedContainer = "container:snakeOnGithub.xcodeproj">
+            BuildableName = "SnakeOnGithub.app"
+            BlueprintName = "SnakeOnGithub"
+            ReferencedContainer = "container:SnakeOnGithub.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
