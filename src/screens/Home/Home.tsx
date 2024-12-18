@@ -14,6 +14,25 @@ import * as Cheerio from 'cheerio';
 import UserCard from '../../components/UserCard';
 import LoadingCard from '../../components/LoadingCard';
 import NoUserCard from '../../components/NoUserCard';
+import {gql, useQuery} from '@apollo/client';
+
+const DATA = gql`
+  query ($userName: String!) {
+    user(login: $userName) {
+      contributionsCollection {
+        contributionCalendar {
+          totalContributions
+          weeks {
+            contributionDays {
+              contributionCount
+              date
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 function Home({navigation}: HomeProps): JSX.Element {
   const [input, setInput] = useState('');
@@ -24,6 +43,19 @@ function Home({navigation}: HomeProps): JSX.Element {
   const [commitCount, setCommitCount] = useState(0);
   const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
+
+  const {
+    loading: loading2,
+    error,
+    data: data2,
+  } = useQuery(DATA, {
+    variables: {userName: 'salihbektas'},
+  });
+
+  if (!loading2)
+    console.log(
+      data2.user.contributionsCollection.contributionCalendar.weeks.length,
+    );
 
   const abort = useRef(new AbortController());
 
