@@ -6,7 +6,7 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext((_, {headers}) => {
-  const token = '';
+  const token = process.env.GITHUB_TOKEN;
   return {
     headers: {
       ...headers,
