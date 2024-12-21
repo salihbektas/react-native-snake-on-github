@@ -34,6 +34,18 @@ const DATA = gql`
   }
 `;
 
+const debounce = (func: (param: string) => void, delay: number) => {
+  let timeoutId: NodeJS.Timeout;
+
+  return (arg: string) => {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => {
+      func(arg);
+    }, delay);
+  };
+};
+
 function Home({navigation}: HomeProps): JSX.Element {
   const [input, setInput] = useState('');
   const [user, setUser] = useState('');
@@ -44,20 +56,28 @@ function Home({navigation}: HomeProps): JSX.Element {
   const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
 
+  const search = debounce(setInput, 1000);
+
   const {
     loading: loading2,
     error,
     data: data2,
+    refetch,
   } = useQuery(DATA, {
-    variables: {userName: 'salihbektas'},
+    variables: {userName: input},
   });
 
-  if (!loading2)
+  if (!loading2 && !error)
     console.log(
-      data2.user.contributionsCollection.contributionCalendar.weeks.length,
+      data2.user.contributionsCollection.contributionCalendar.weeks[52],
     );
 
   const abort = useRef(new AbortController());
+
+  function combine(params: string) {
+    search(params);
+    getData(params);
+  }
 
   function getData(username: string) {
     setInput(username);
@@ -141,7 +161,7 @@ function Home({navigation}: HomeProps): JSX.Element {
 
       <TextInput
         value={input}
-        onChangeText={getData}
+        onChangeText={combine}
         placeholder="UserName"
         style={{backgroundColor: 'white'}}
       />
