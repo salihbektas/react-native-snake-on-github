@@ -15,6 +15,7 @@ import UserCard from '../../components/UserCard';
 import LoadingCard from '../../components/LoadingCard';
 import NoUserCard from '../../components/NoUserCard';
 import {gql, useQuery} from '@apollo/client';
+import useDebounce from '../../hooks/useDebounce';
 
 const DATA = gql`
   query ($userName: String!) {
@@ -34,18 +35,6 @@ const DATA = gql`
   }
 `;
 
-const debounce = (func: (param: string) => void, delay: number) => {
-  let timeoutId: NodeJS.Timeout;
-
-  return (arg: string) => {
-    clearTimeout(timeoutId);
-
-    timeoutId = setTimeout(() => {
-      func(arg);
-    }, delay);
-  };
-};
-
 function Home({navigation}: HomeProps): JSX.Element {
   const [input, setInput] = useState('');
   const [user, setUser] = useState('');
@@ -55,8 +44,7 @@ function Home({navigation}: HomeProps): JSX.Element {
   const [commitCount, setCommitCount] = useState(0);
   const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
-
-  const search = debounce(setInput, 1000);
+  const debouncedInput = useDebounce(input, 10000);
 
   const {
     loading: loading2,
@@ -64,7 +52,7 @@ function Home({navigation}: HomeProps): JSX.Element {
     data: data2,
     refetch,
   } = useQuery(DATA, {
-    variables: {userName: input},
+    variables: {userName: debouncedInput},
   });
 
   if (!loading2 && !error)
@@ -73,11 +61,6 @@ function Home({navigation}: HomeProps): JSX.Element {
     );
 
   const abort = useRef(new AbortController());
-
-  function combine(params: string) {
-    search(params);
-    getData(params);
-  }
 
   function getData(username: string) {
     setInput(username);
@@ -161,7 +144,7 @@ function Home({navigation}: HomeProps): JSX.Element {
 
       <TextInput
         value={input}
-        onChangeText={combine}
+        onChangeText={getData}
         placeholder="UserName"
         style={{backgroundColor: 'white'}}
       />
