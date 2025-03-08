@@ -1,4 +1,4 @@
-import React, {useRef, useState, useTransition} from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   Button,
@@ -27,6 +27,7 @@ const DATA = gql`
             contributionDays {
               contributionCount
               date
+              contributionLevel
             }
           }
         }
@@ -40,79 +41,71 @@ function Home({navigation}: HomeProps): JSX.Element {
   const [user, setUser] = useState('');
   const [nickName, setNickName] = useState('');
   const [avatar, setAvatar] = useState('');
-  const [data, setData] = useState<number[]>([]);
-  const [commitCount, setCommitCount] = useState(0);
-  const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
-  const debouncedInput = useDebounce(input, 10000);
+  const debouncedInput = useDebounce(input);
 
   const {
     loading: loading2,
     error,
-    data: data2,
-    refetch,
+    data: queryData,
   } = useQuery(DATA, {
     variables: {userName: debouncedInput},
   });
 
-  if (!loading2 && !error)
-    console.log(
-      data2.user.contributionsCollection.contributionCalendar.weeks[52],
-    );
-
-  const abort = useRef(new AbortController());
-
-  function getData(username: string) {
+  function onChange(username: string) {
     setInput(username);
     setLoading(true);
-    setCommitCount(0);
-    abort.current.abort();
-    abort.current = new AbortController();
-    let signal = abort.current.signal;
 
-    fetch(`https://github.com/${username}`, {signal})
+    fetch(`https://github.com/${username}`)
       .then(value => value.text())
       .then(value => {
-        startTransition(() => {
-          const $ = Cheerio.load(value);
-          const $days = $('td.ContributionCalendar-day');
-          const $avatar = $(
-            '.avatar.avatar-user.width-full.border.color-bg-default',
-          );
-          const $name = $('.p-name.vcard-fullname.d-block.overflow-hidden');
-          const $nickname = $('.p-nickname.vcard-username.d-block');
-          setUser($name.text().trim());
-          setNickName($nickname.text().trim());
-          const temp = $avatar.attr('src');
-          temp !== undefined ? setAvatar(temp) : setAvatar('');
-          let newData: number[] = [];
-          let iter = 0;
-          let ix = 0;
-          $($days.get()).each((i, day) => {
-            let dataLevel = parseInt($(day).attr('data-level') as string);
-            let dataIx = parseInt($(day).attr('data-ix') as string);
+        const $ = Cheerio.load(value);
+        const $avatar = $(
+          '.avatar.avatar-user.width-full.border.color-bg-default',
+        );
+        const $name = $('.p-name.vcard-fullname.d-block.overflow-hidden');
+        const $nickname = $('.p-nickname.vcard-username.d-block');
+        setUser($name.text().trim());
+        setNickName($nickname.text().trim());
+        const temp = $avatar.attr('src');
+        temp !== undefined ? setAvatar(temp) : setAvatar('');
 
-            if (dataIx === ix) ++ix;
-            else {
-              ix = 1;
-              ++iter;
-            }
-
-            newData[iter + dataIx * 7] = dataLevel;
-
-            if (dataLevel > 0) setCommitCount(c => c + 1);
-          });
-          setData(newData);
-          setLoading(false);
-        });
-      })
-      .catch(e => {
-        console.log('aborted', signal.aborted);
+        setLoading(false);
       });
   }
 
   function onPress() {
-    if (commitCount === 0)
+    if (loading2 || error) return;
+    let commits = 0;
+    const commitData: number[] = [];
+    queryData.user.contributionsCollection.contributionCalendar.weeks.forEach(
+      (week: Record<string, any>, weekIdx: number) => {
+        week.contributionDays.forEach(
+          (day: Record<string, any>, dayIdx: number) => {
+            if (day.contributionCount > 0) ++commits;
+            switch (day.contributionLevel) {
+              case 'NONE':
+                commitData[dayIdx + weekIdx * 7] = 0;
+                break;
+              case 'FIRST_QUARTILE':
+                commitData[dayIdx + weekIdx * 7] = 1;
+                break;
+              case 'SECOND_QUARTILE':
+                commitData[dayIdx + weekIdx * 7] = 2;
+                break;
+              case 'THIRD_QUARTILE':
+                commitData[dayIdx + weekIdx * 7] = 3;
+                break;
+              case 'FOURTH_QUARTILE':
+                commitData[dayIdx + weekIdx * 7] = 4;
+                break;
+            }
+          },
+        );
+      },
+    );
+
+    if (commits === 0)
       Alert.alert(
         'Game Cannot Start',
         `${nickName} did not make any contributions last year.`,
@@ -121,11 +114,11 @@ function Home({navigation}: HomeProps): JSX.Element {
     else {
       Keyboard.dismiss();
       navigation.navigate('Game', {
-        data: data,
+        data: commitData,
         avatar: avatar,
         user: user,
         nickName: nickName,
-        commitCount: commitCount,
+        commitCount: commits,
       });
     }
   }
@@ -144,7 +137,7 @@ function Home({navigation}: HomeProps): JSX.Element {
 
       <TextInput
         value={input}
-        onChangeText={getData}
+        onChangeText={onChange}
         placeholder="UserName"
         style={{backgroundColor: 'white'}}
       />
