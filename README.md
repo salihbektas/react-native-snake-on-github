@@ -8,16 +8,27 @@ Simple snake game but on github commit chart
 
 Deeply inspired by the [snk](https://github.com/Platane/snk) made by [Arthur Brongniart (Platane)](https://github.com/Platane).
 
-## How To Build
+## Get started
 
 Required to have Node.js pre-installed on your system
 
-run:
+1. Install dependencies
 
-```
->npm i
->npx react-native run-android
-```
+  ```
+  >npm install
+  ```
+
+2. Get your github token on your github account settings page
+
+3. Rename the ".env.template" file to ".env.local"
+
+4. Paste the your token in the comment field
+
+5. Start the app
+
+  ```
+  >npx react-native run-android
+  ```
 
 For more detailed information:
 

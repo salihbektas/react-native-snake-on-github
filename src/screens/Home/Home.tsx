@@ -20,6 +20,9 @@ import useDebounce from '../../hooks/useDebounce';
 const DATA = gql`
   query ($userName: String!) {
     user(login: $userName) {
+      avatarUrl
+      name
+      login
       contributionsCollection {
         contributionCalendar {
           totalContributions
@@ -38,14 +41,10 @@ const DATA = gql`
 
 function Home({navigation}: HomeProps): JSX.Element {
   const [input, setInput] = useState('');
-  const [user, setUser] = useState('');
-  const [nickName, setNickName] = useState('');
-  const [avatar, setAvatar] = useState('');
-  const [loading, setLoading] = useState(false);
   const debouncedInput = useDebounce(input);
 
   const {
-    loading: loading2,
+    loading,
     error,
     data: queryData,
   } = useQuery(DATA, {
@@ -54,30 +53,13 @@ function Home({navigation}: HomeProps): JSX.Element {
 
   function onChange(username: string) {
     setInput(username);
-    setLoading(true);
-
-    fetch(`https://github.com/${username}`)
-      .then(value => value.text())
-      .then(value => {
-        const $ = Cheerio.load(value);
-        const $avatar = $(
-          '.avatar.avatar-user.width-full.border.color-bg-default',
-        );
-        const $name = $('.p-name.vcard-fullname.d-block.overflow-hidden');
-        const $nickname = $('.p-nickname.vcard-username.d-block');
-        setUser($name.text().trim());
-        setNickName($nickname.text().trim());
-        const temp = $avatar.attr('src');
-        temp !== undefined ? setAvatar(temp) : setAvatar('');
-
-        setLoading(false);
-      });
   }
 
   function onPress() {
-    if (loading2 || error) return;
+    if (loading || error) return;
     let commits = 0;
     const commitData: number[] = [];
+
     queryData.user.contributionsCollection.contributionCalendar.weeks.forEach(
       (week: Record<string, any>, weekIdx: number) => {
         week.contributionDays.forEach(
@@ -108,16 +90,16 @@ function Home({navigation}: HomeProps): JSX.Element {
     if (commits === 0)
       Alert.alert(
         'Game Cannot Start',
-        `${nickName} did not make any contributions last year.`,
+        `${queryData?.user?.login} did not make any contributions last year.`,
         [{text: 'OK'}],
       );
     else {
       Keyboard.dismiss();
       navigation.navigate('Game', {
         data: commitData,
-        avatar: avatar,
-        user: user,
-        nickName: nickName,
+        avatar: queryData?.user?.avatarUrl,
+        user: queryData?.user?.login,
+        nickName: queryData?.user?.name,
         commitCount: commits,
       });
     }
@@ -129,10 +111,14 @@ function Home({navigation}: HomeProps): JSX.Element {
         <LoadingCard />
       ) : input.length === 0 ? (
         <View style={styles.placeholder} />
-      ) : avatar.length === 0 ? (
+      ) : !queryData?.user?.login ? (
         <NoUserCard input={input} />
       ) : (
-        <UserCard avatar={avatar} userName={user} nickName={nickName} />
+        <UserCard
+          avatar={queryData?.user?.avatarUrl}
+          userName={queryData?.user?.login}
+          nickName={queryData?.user?.name}
+        />
       )}
 
       <TextInput
