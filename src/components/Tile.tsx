@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     width: STEP,
     borderWidth: 1,
     borderColor: colors[5],
-    borderRadius: 2,
+    borderRadius: 4,
   },
 });
 

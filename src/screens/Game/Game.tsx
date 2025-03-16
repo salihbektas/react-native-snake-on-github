@@ -279,14 +279,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 
-  tile: {
-    height: STEP - 2,
-    width: STEP - 2,
-    marginBottom: 2,
-    marginRight: 2,
-    borderRadius: 2,
-  },
-
   board: {
     flexWrap: 'wrap',
     width: '100%',
