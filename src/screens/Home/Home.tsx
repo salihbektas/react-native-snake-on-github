@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import {
   Alert,
-  Button,
   Keyboard,
+  Pressable,
   SafeAreaView,
   StyleSheet,
+  Text,
   TextInput,
   View,
 } from 'react-native';
@@ -127,7 +128,9 @@ function Home({navigation}: HomeProps): JSX.Element {
         style={{backgroundColor: 'white'}}
       />
 
-      <Button title="Go Game" onPress={onPress} />
+      <Pressable onPress={onPress} style={styles.button}>
+        <Text style={styles.text}>Go Game</Text>
+      </Pressable>
     </SafeAreaView>
   );
 }
@@ -141,6 +144,17 @@ const styles = StyleSheet.create({
   placeholder: {
     height: 120,
     marginVertical: 8,
+  },
+
+  button:{
+    backgroundColor: 'purple',
+    paddingVertical: 8,
+  },
+
+  text:{
+    color: 'white',
+    fontSize: 20,
+    textAlign:'center',
   },
 });
 
