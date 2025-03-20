@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 
 import {HomeProps} from '../../types';
-import * as Cheerio from 'cheerio';
 import UserCard from '../../components/UserCard';
 import LoadingCard from '../../components/LoadingCard';
 import NoUserCard from '../../components/NoUserCard';
