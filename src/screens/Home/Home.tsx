@@ -107,10 +107,10 @@ function Home({navigation}: HomeProps): JSX.Element {
 
   return (
     <SafeAreaView style={styles.main}>
-      {loading ? (
-        <LoadingCard />
-      ) : input.length === 0 ? (
+      {debouncedInput.length === 0 ? (
         <View style={styles.placeholder} />
+      ) : loading ? (
+        <LoadingCard />
       ) : !queryData?.user?.login ? (
         <NoUserCard input={input} />
       ) : (
