@@ -16,6 +16,7 @@ import LoadingCard from '../../components/LoadingCard';
 import NoUserCard from '../../components/NoUserCard';
 import {gql, useQuery} from '@apollo/client';
 import useDebounce from '../../hooks/useDebounce';
+import { COLORS } from '../../constants';
 
 const DATA = gql`
   query ($userName: String!) {
@@ -138,7 +139,7 @@ function Home({navigation}: HomeProps): JSX.Element {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    backgroundColor: '#0d1117',
+    backgroundColor: COLORS.black,
   },
 
   placeholder: {
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
   },
 
   button:{
-    backgroundColor: 'purple',
+    backgroundColor: COLORS.purple,
     paddingVertical: 8,
   },
 

@@ -14,7 +14,7 @@ import useInterval from 'use-interval';
 import Tile from '../../components/Tile';
 import {GameProps} from '../../types';
 import UserCard from '../../components/UserCard';
-import {STEP, TICK_TIME} from '../../constants';
+import {COLORS, STEP, TICK_TIME} from '../../constants';
 
 interface snakeNode {
   x: number;
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#0d1117',
+    backgroundColor: COLORS.black,
   },
 
   topContainer: {
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     height: STEP + 1,
     aspectRatio: 1,
     borderRadius: 3,
-    backgroundColor: 'purple',
+    backgroundColor: COLORS.purple,
     zIndex: 2,
     position: 'absolute',
     top: -1,
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     height: STEP - 1,
     aspectRatio: 1,
     borderRadius: 2,
-    backgroundColor: 'purple',
+    backgroundColor: COLORS.purple,
     zIndex: 1,
     position: 'absolute',
   },
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
 
   button: {
     flex: 1,
-    backgroundColor: '#f0f6fc',
+    backgroundColor: COLORS.white,
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 2,
