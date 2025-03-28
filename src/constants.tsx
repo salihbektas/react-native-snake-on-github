@@ -7,13 +7,13 @@ export const TICK_TIME = 300;
 
 export const COLORS = {
     commitLevel: [
-      '#161b22',
-      '#0e4429',
-      '#006d32',
-      '#26a641',
-      '#39d353',
+      '#151b23',
+      '#033a16',
+      '#196c2e',
+      '#2ea043',
+      '#56d364',
     ],
-    green: '#26a641',
+    green: '#2ea043',
     purple: '#663399',
     white: '#f0f6fc',
     black: '#0d1117',
