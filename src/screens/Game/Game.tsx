@@ -281,8 +281,8 @@ const styles = StyleSheet.create({
 
   board: {
     flexWrap: 'wrap',
-    width: '100%',
     height: STEP * 7.01,
+    marginHorizontal: 'auto',
   },
 
   head: {
