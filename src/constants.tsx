@@ -17,4 +17,5 @@ export const COLORS = {
     purple: '#663399',
     white: '#f0f6fc',
     black: '#0d1117',
+    gray: '#808080',
 }

@@ -125,7 +125,8 @@ function Home({navigation}: HomeProps): JSX.Element {
       <TextInput
         value={input}
         onChangeText={onChange}
-        placeholder="UserName"
+        placeholder="Enter Github Username"
+        placeholderTextColor={COLORS.gray}
         style={{backgroundColor: 'white'}}
       />
 
