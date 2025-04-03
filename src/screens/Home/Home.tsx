@@ -108,30 +108,32 @@ function Home({navigation}: HomeProps): JSX.Element {
 
   return (
     <SafeAreaView style={styles.main}>
-      {debouncedInput.length === 0 ? (
-        <View style={styles.placeholder} />
-      ) : loading ? (
-        <LoadingCard />
-      ) : !queryData?.user?.login ? (
-        <NoUserCard input={input} />
-      ) : (
-        <UserCard
-          avatar={queryData?.user?.avatarUrl}
-          userName={queryData?.user?.login}
-          nickName={queryData?.user?.name}
-        />
-      )}
+      <Pressable onPress={Keyboard.dismiss} style={styles.main}>
+        {debouncedInput.length === 0 ? (
+          <View style={styles.placeholder} />
+        ) : loading ? (
+          <LoadingCard />
+        ) : !queryData?.user?.login ? (
+          <NoUserCard input={input} />
+        ) : (
+          <UserCard
+            avatar={queryData?.user?.avatarUrl}
+            userName={queryData?.user?.login}
+            nickName={queryData?.user?.name}
+          />
+        )}
 
-      <TextInput
-        value={input}
-        onChangeText={onChange}
-        placeholder="Enter Github Username"
-        placeholderTextColor={COLORS.gray}
-        style={{backgroundColor: 'white'}}
-      />
+        <TextInput
+          value={input}
+          onChangeText={onChange}
+          placeholder="Enter Github Username"
+          placeholderTextColor={COLORS.gray}
+          style={{backgroundColor: 'white'}}
+          />
 
-      <Pressable onPress={onPress} style={styles.button}>
-        <Text style={styles.text}>Go Game</Text>
+        <Pressable onPress={onPress} style={styles.button}>
+          <Text style={styles.text}>Go Game</Text>
+        </Pressable>
       </Pressable>
     </SafeAreaView>
   );
